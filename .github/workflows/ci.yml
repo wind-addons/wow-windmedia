@@ -71,6 +71,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: "📦 Install dependencies"
         run: bun install --frozen-lockfile
+      - name: "📦 Install SVN"
+        run: sudo apt-get update && sudo apt-get install -y subversion
       - name: "⬇️ Export vendor libraries"
         run: bun run update-vendor
       - uses: actions/upload-artifact@v4
@@ -123,12 +125,6 @@ jobs:
         with:
           name: vendor
           path: vendor
-      - name: "📦 Install SVN (linux)"
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y subversion
-      - name: "📦 Install SVN (macos)"
-        if: runner.os == 'macOS'
-        run: brew install subversion
       - name: "✅ Run tests"
         run: cargo test -p wow-windmedia
 
