@@ -12,5 +12,5 @@
 			"unknown"
 		]
 	},
-	"ignorePatterns": ["src/**", "vendor/**", "templates/**", "target/**"]
+	"ignorePatterns": ["src/**", "vendor/**", "templates/**", "target/**", ".zed/**"]
 }
