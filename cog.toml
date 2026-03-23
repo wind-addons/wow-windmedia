@@ -24,7 +24,3 @@ build = { changelog_title = "Build" }
 perf = { changelog_title = "Performance" }
 style = { changelog_title = "Style", omit_from_changelog = true }
 revert = { changelog_title = "Reverts" }
-
-pre_bump_hooks = ["cargo set-version {{version}}", "git add :/Cargo.toml"]
-
-post_bump_hooks = ["git push", "git push origin {{version}}"]
