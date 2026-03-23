@@ -19,53 +19,79 @@ Please keep changes aligned with these principles:
 - **Small, stable API surface** — avoid exposing internal helpers without a strong reason
 - **Clear failure modes** — prefer explicit errors over silent fallback behavior
 
-## Setup
+## Prerequisites
 
-Use the pinned toolchain:
+| Tool      | Purpose                          |
+| --------- | -------------------------------- |
+| Rust 1.94 | Build and test                   |
+| Bun       | Vendor script and JS toolchain   |
+| SVN       | Vendor download (libsharedmedia) |
+
+### Install Rust
 
 ```bash
-rustup show
-cargo check
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-Recommended validation commands:
+### Install Bun
+
+See [bun.sh](https://bun.sh/).
+
+### Install SVN
+
+**Windows** — included with TortoiseSVN or install separately via [VisualSVN](https://www.visualsvn.com/downloads/).
+
+**macOS:**
+
+```bash
+brew install subversion
+```
+
+**Linux (Debian/Ubuntu):**
+
+```bash
+sudo apt-get install subversion
+```
+
+## Setup
+
+```bash
+bun install
+bun run update-vendor
+```
+
+## Checks
 
 ```bash
 cargo fmt --all --check
-cargo clippy --all-targets -- -D warnings
-cargo test --lib
-cargo doc --no-deps
+cargo clippy -p wow-windmedia --all-targets -- -D warnings
+cargo test -p wow-windmedia
+cargo doc -p wow-windmedia --no-deps
+bun run lint
+bun run format:check
+stylua --check templates/*.lua
 ```
 
-If you edit files under `templates/`, it is also helpful to run:
+## Pre-commit Hooks
 
 ```bash
-stylua templates/*.lua
+cargo install --locked cocogitto
+prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
 ```
 
-## Commit Convention and Hooks
+This crate keeps its hook and commit configuration in `prek.toml` and `cog.toml`.
+
+## Commit Convention
 
 The repository uses **Conventional Commits**.
 
 Examples:
 
-- `feat: add BLP smoke tests`
+- `feat: add BLP import support`
 - `fix: sync generated file version metadata`
 - `docs: refine publishing guide`
 - `test: add Lua 5.1 loader runtime coverage`
-
-Recommended local setup from the repository root:
-
-```bash
-cargo install --locked cocogitto
-winget install --id j178.Prek --exact
-prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
-```
-
-This crate keeps its hook and commit configuration in:
-
-- `prek.toml`
-- `cog.toml`
+- `ci: add macOS CI job`
 
 ## Pull Request Expectations
 
@@ -90,9 +116,7 @@ Before opening a PR, make sure:
 
 ## API Changes
 
-For changes that affect the public API, please be extra conservative.
-
-In particular:
+For changes that affect the public API, please be extra conservative:
 
 - avoid adding public modules or functions unless necessary
 - avoid locking in awkward APIs that will be expensive to support after `0.1.0`

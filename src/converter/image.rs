@@ -41,6 +41,7 @@ pub fn convert_to_preview_data_uri(input: &Path) -> Result<String, Error> {
 ///
 /// Decodes the BLP via wow_blp, applies power-of-two resizing,
 /// and writes as TGA to the output path.
+#[allow(dead_code)]
 pub(crate) fn convert_blp_to_tga(input: &Path, output: &Path) -> Result<ImageConvertResult, Error> {
 	let dynamic = super::blp::read_blp(input)?;
 	write_dynamic_image_as_tga(&dynamic, output)

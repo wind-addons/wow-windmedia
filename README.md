@@ -2,18 +2,20 @@
 
 [![CI](https://github.com/wind-addons/wow-windmedia/actions/workflows/ci.yml/badge.svg)](https://github.com/wind-addons/wow-windmedia/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Edition](https://img.shields.io/badge/edition-2024-blue)](https://doc.rust-lang.org/edition-guide/rust-2024/)
+[![Rust 1.94+](https://img.shields.io/badge/rust-1.94.0+-blue.svg)](https://doc.rust-lang.org/edition-guide/rust-2024/)
 
 `wow-windmedia` is a Rust library for building and maintaining World of Warcraft SharedMedia addons.
 
-It manages `data.lua`, generates `loader.lua` and `WindMedia.toc`, converts supported media formats into WoW-compatible outputs, and keeps the addon directory in a consistent state through a small stateless API.
+It manages `data.lua`, generates `loader.lua` and `.toc`, converts supported media formats into WoW-compatible outputs, and keeps the addon directory in a consistent state through a small stateless API.
 
 ## 📦 Installation
 
 ```toml
 [dependencies]
-wow-windmedia = "0.1.0"
+wow-windmedia = "0.1"
 ```
+
+**Prerequisites:** Rust 1.94+ (edition 2024).
 
 ## 🚀 Quick Start
 
@@ -25,6 +27,9 @@ use wow_windmedia::{
 };
 
 fn main() -> Result<(), wow_windmedia::Error> {
+    // The addon name is derived from the folder path.
+    // "!!!WindMedia" sorts to top in the addon list;
+    // "WindMedia" works too.
     let addon_dir = Path::new("AddOns/WindMedia");
     ensure_addon_dir(addon_dir)?;
 
@@ -66,13 +71,31 @@ Every write operation follows the same model:
 
 This keeps the runtime model small, deterministic, and easy to integrate into higher-level tools.
 
+### Addon Name Resolution
+
+The addon name is derived from the folder path — no hardcoding required.
+
+| Folder name    | TOC file           | TOC Title   |
+| -------------- | ------------------ | ----------- |
+| `WindMedia`    | `WindMedia.toc`    | `WindMedia` |
+| `!!!WindMedia` | `!!!WindMedia.toc` | `WindMedia` |
+| `!!MyAddon`    | `!!MyAddon.toc`    | `MyAddon`   |
+
+Leading `!` characters are stripped from the title automatically.
+
 ## 🗂️ Addon Layout
 
 ```text
-WindMedia/
+WindMedia/                      # or !!!WindMedia — both work
+├── WindMedia.toc               # or !!!WindMedia.toc
 ├── data.lua
 ├── loader.lua
-├── WindMedia.toc
+├── libraries/
+│   ├── LibStub/LibStub.lua
+│   ├── CallbackHandler-1.0/CallbackHandler-1.0.lua
+│   └── LibSharedMedia-3.0/
+│       ├── LibSharedMedia-3.0.lua
+│       └── lib.xml
 └── media/
     ├── background/
     ├── border/
@@ -81,41 +104,23 @@ WindMedia/
     └── statusbar/
 ```
 
-## 🛠️ Development
+## 📦 Vendor Management
 
-Recommended checks from the repository root:
-
-```bash
-cargo fmt --all --check
-cargo clippy --all-targets -- -D warnings
-cargo test --all-targets
-cargo doc --no-deps
-cargo publish --dry-run
-```
-
-### Windows
+Vendor libraries (LibSharedMedia-3.0, Serpent) are gitignored and regenerated via a Bun script.
 
 ```bash
-cargo install --locked cocogitto
-winget install --id j178.Prek --exact
-winget install --id JohnnyMorganz.Stylua --exact
-prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
+# Requires: bun, svn
+bun install
+bun run update-vendor
 ```
 
-### macOS
+This runs `svn export` for libsharedmedia-3.0 and fetches serpent from GitHub. The `vendor/` directory must exist before building (Rust embeds files via `include_str!`).
 
-```bash
-cargo install --locked cocogitto
-cargo install --locked stylua
-brew install prek
-prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
-```
+## 📚 More
 
-## 📚 Documentation
-
-- Contributor guidance: [`CONTRIBUTING.md`](./CONTRIBUTING.md)
-- Publishing workflow: [`PUBLISHING.md`](./PUBLISHING.md)
+- [Development setup](./CONTRIBUTING.md) — prerequisites, checks, hooks
+- [Publishing workflow](./PUBLISHING.md) — release process and crates.io
 
 ## 📄 License
 
-[`MIT LICENSE`](./LICENSE).
+[MIT LICENSE](./LICENSE).

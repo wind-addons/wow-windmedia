@@ -1,0 +1,12 @@
+## Interface: __WINDMEDIA_INTERFACE__
+## Version: __WINDMEDIA_VERSION__
+## Title: __WINDMEDIA_TITLE__
+## Notes: Provides textures, sounds, and other media for LibSharedMedia addons.
+## DefaultState: enabled
+
+libraries\LibStub\LibStub.lua
+libraries\CallbackHandler-1.0\CallbackHandler-1.0.lua
+libraries\LibSharedMedia-3.0\lib.xml
+
+data.lua
+loader.lua

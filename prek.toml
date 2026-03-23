@@ -5,12 +5,7 @@ fail_fast = false
 
 [[repos]]
 repo = "builtin"
-hooks = [
-  { id = "trailing-whitespace" },
-  { id = "end-of-file-fixer" },
-  { id = "check-yaml" },
-  { id = "check-toml" },
-]
+hooks = [{ id = "trailing-whitespace" }, { id = "end-of-file-fixer" }, { id = "check-yaml" }, { id = "check-toml" }]
 
 [[repos]]
 repo = "local"
@@ -31,6 +26,24 @@ language = "system"
 entry = "stylua --check"
 files = { glob = ["templates/*.lua"] }
 pass_filenames = true
+stages = ["pre-commit"]
+
+[[repos.hooks]]
+id = "oxfmt-check"
+name = "oxfmt --check"
+language = "system"
+entry = "bun run format:check"
+files = { glob = ["*.ts", "*.js", "*.mjs", "*.cjs"] }
+pass_filenames = false
+stages = ["pre-commit"]
+
+[[repos.hooks]]
+id = "oxlint-check"
+name = "oxlint"
+language = "system"
+entry = "bun run lint"
+files = { glob = ["*.ts", "*.js", "*.mjs", "*.cjs"] }
+pass_filenames = false
 stages = ["pre-commit"]
 
 [[repos.hooks]]

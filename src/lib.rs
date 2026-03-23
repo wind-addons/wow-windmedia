@@ -54,13 +54,15 @@
 //!
 //! ## Addon Directory Structure
 //!
-//! After `ensure_addon_dir`, the directory layout is:
+//! After `ensure_addon_dir`, the directory layout is driven by the folder
+//! name. For a folder named `MyAddon`:
 //!
 //! ```text
-//! AddOns/WindMedia/
-//! ├── data.lua          # Media registry (Lua table, single source of truth)
-//! ├── loader.lua        # LSM registration script (auto-generated)
-//! ├── WindMedia.toc     # WoW addon manifest (auto-generated)
+//! MyAddon/
+//! ├── MyAddon.toc       # WoW addon manifest (auto-generated)
+//! ├── data.lua           # Media registry (Lua table, single source of truth)
+//! ├── loader.lua         # LSM registration script (auto-generated)
+//! ├── libraries/         # Vendored LibSharedMedia-3.0 dependencies
 //! └── media/
 //!     ├── statusbar/    # TGA texture files
 //!     ├── background/   # TGA texture files
@@ -68,6 +70,10 @@
 //!     ├── font/         # TTF/OTF font files
 //!     └── sound/        # OGG audio files
 //! ```
+//!
+//! If the folder name starts with `!` (e.g. `!!!WindMedia`), the `.toc`
+//! file will be `!!!WindMedia.toc` but the in-addon title will strip the
+//! leading `!` characters (e.g. `WindMedia`).
 //!
 //! [wow]: https://worldofwarcraft.blizzard.com
 //! [lsm]: https://www.wowace.com/projects/libsharedmedia-3-0/
@@ -81,13 +87,70 @@ mod entry;
 mod error;
 mod lua_io;
 mod media;
-pub mod sanitize;
 pub mod template;
 
-/// The default addon directory name used by WindMedia.
-pub const ADDON_DIR_NAME: &str = "WindMedia";
+use std::path::Path;
 
 pub use data::*;
 pub use entry::*;
 pub use error::*;
 pub use media::*;
+
+/// Extract the addon name from its directory path.
+///
+/// Returns the final component of `addon_dir` as a string slice.
+///
+/// # Panics
+/// Panics if the directory name cannot be determined or is not valid UTF-8.
+pub fn addon_name(addon_dir: &Path) -> &str {
+	addon_dir
+		.file_name()
+		.expect("addon_dir must have a file name")
+		.to_str()
+		.expect("addon_dir name must be valid UTF-8")
+}
+
+/// Derive the human-readable addon title from the addon name.
+///
+/// Strips leading `!` characters. For example, `!!!WindMedia` → `WindMedia`.
+pub fn addon_title(addon_name: &str) -> &str {
+	addon_name.trim_start_matches('!')
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+	use std::path::PathBuf;
+
+	#[test]
+	fn test_addon_name_plain() {
+		let path = PathBuf::from("/wow/AddOns/WindMedia");
+		assert_eq!(addon_name(&path), "WindMedia");
+	}
+
+	#[test]
+	fn test_addon_name_with_bangs() {
+		let path = PathBuf::from("/wow/AddOns/!!!WindMedia");
+		assert_eq!(addon_name(&path), "!!!WindMedia");
+	}
+
+	#[test]
+	fn test_addon_title_strips_bangs() {
+		assert_eq!(addon_title("!!!WindMedia"), "WindMedia");
+	}
+
+	#[test]
+	fn test_addon_title_single_bang() {
+		assert_eq!(addon_title("!TestAddon"), "TestAddon");
+	}
+
+	#[test]
+	fn test_addon_title_no_bang() {
+		assert_eq!(addon_title("WindMedia"), "WindMedia");
+	}
+
+	#[test]
+	fn test_addon_title_all_bangs() {
+		assert_eq!(addon_title("!!!"), "");
+	}
+}

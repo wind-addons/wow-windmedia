@@ -1,0 +1,35 @@
+name: "🔍 PR Check"
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  conventional:
+    name: "📝 Conventional Commits"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "📥 Checkout"
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: "📦 Install cocogitto"
+        run: cargo install --locked cocogitto
+      - name: "🔍 Verify PR title"
+        shell: bash
+        run: |
+          title='${{ github.event.pull_request.title }}'
+          pattern='^(feat|fix|docs|refactor|test|ci|chore|build|perf|style|revert)(\([a-zA-Z0-9._/-]+\))?!?: .+'
+          if [[ ! "$title" =~ $pattern ]]; then
+            echo "Invalid PR title: $title"
+            echo "Expected Conventional Commit format, e.g. 'feat: add loader runtime test'"
+            exit 1
+          fi
+      - name: "🔎 Verify commit messages"
+        run: cog check "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"

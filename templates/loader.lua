@@ -1,9 +1,5 @@
---[[
-    WindMedia — Loader
-    Version: __WINDMEDIA_VERSION__
-    Reads the data table and registers all entries to LibSharedMedia.
-    DO NOT EDIT MANUALLY
-]]
+-- WindMedia loader
+-- Version: __WINDMEDIA_VERSION__
 
 local ADDON_NAME, addon = ...
 local data = addon and addon.data
