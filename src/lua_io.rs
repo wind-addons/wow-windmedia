@@ -8,70 +8,7 @@ use mlua::{Lua, Table, Value};
 
 use crate::{AddonData, EntryMetadata, Error, MediaEntry, MediaType};
 
-// This serializer runs inside Lua and produces a formatted table literal.
-// Rust supplies typed data; Lua is responsible for string escaping and layout.
-
-const SERIALIZE_LUA: &str = r#"
-local function serialize(tbl, indent)
-    indent = indent or ""
-    local parts = {}
-    local inner = indent .. "    "
-
-    local keys = {}
-    for k, _ in pairs(tbl) do
-        keys[#keys + 1] = k
-    end
-    -- Sort: string keys alphabetically, "entries" last, numeric keys ascending
-    table.sort(keys, function(a, b)
-        if type(a) == "number" and type(b) == "number" then
-            return a < b
-        end
-        if type(a) == "number" then return false end
-        if type(b) == "number" then return true end
-        if a == "entries" then return false end
-        if b == "entries" then return true end
-        return a < b
-    end)
-
-    for _, k in ipairs(keys) do
-        local v = tbl[k]
-        local key_str
-        if type(k) == "string" then
-            if k:match("^[%a_][%w_]*$") then
-                key_str = k
-            else
-                key_str = "[" .. string.format("%q", k) .. "]"
-            end
-        else
-            key_str = "[" .. tostring(k) .. "]"
-        end
-
-        local value_str
-        if v == nil then
-            value_str = "nil"
-        elseif type(v) == "table" then
-            if next(v) == nil then
-                value_str = "{}"
-            else
-                value_str = "{\n" .. serialize(v, inner) .. "\n" .. inner .. "}"
-            end
-        elseif type(v) == "string" then
-            value_str = string.format("%q", v)
-        elseif type(v) == "number" then
-            value_str = tostring(v)
-        elseif type(v) == "boolean" then
-            value_str = tostring(v)
-        else
-            value_str = '"' .. tostring(v) .. '"'
-        end
-
-        parts[#parts + 1] = inner .. key_str .. " = " .. value_str
-    end
-
-    return table.concat(parts, ",\n")
-end
-return serialize
-"#;
+const SERPENT_LUA: &str = include_str!("../vendor/serpent/serpent.lua");
 
 /// Read data.lua from an addon directory and return the parsed AddonData.
 pub(crate) fn read_data(addon_dir: &Path) -> Result<AddonData, Error> {
@@ -190,12 +127,10 @@ pub(crate) fn write_data(addon_dir: &Path, data: &AddonData) -> Result<(), Error
 	// Generate the Lua content
 	let body = serialize_addon_data(data)?;
 	let content = format!(
-		"--[[\n    WindMedia — Auto-generated\n    DO NOT EDIT MANUALLY\n\
-Generated: {}\n    Tool: wow-windmedia v{}\n    Entries: {}\n]]\n\n\
-		 local _, addon = ...\n\naddon.data = {{\n{body}\n}}\n",
+		"-- Generated: {}\n-- Tool: wow-windmedia v{}\n\nlocal _, addon = ...\n\naddon.data = {}\n",
 		data.generated_at.format("%Y-%m-%dT%H:%M:%SZ"),
 		data.version,
-		data.entries.len(),
+		body,
 	);
 
 	// Atomic write: .tmp → rename
@@ -237,14 +172,14 @@ fn next_bak_number(addon_dir: &Path) -> u32 {
 fn serialize_addon_data(data: &AddonData) -> Result<String, Error> {
 	let lua = Lua::new();
 
-	// Load the serialize function
-	let serialize_fn: mlua::Function = lua.load(SERIALIZE_LUA).eval()?;
-
-	// Build the data table in Lua
+	let serpent: Table = lua.load(SERPENT_LUA).eval()?;
+	let block_fn: mlua::Function = serpent.get("block")?;
 	let tbl = addon_data_to_table(&lua, data)?;
 
-	// Call serialize
-	let body: String = serialize_fn.call(tbl)?;
+	let opts = lua.create_table()?;
+	opts.set("comment", false)?;
+
+	let body: String = block_fn.call((tbl, opts))?;
 	Ok(body)
 }
 
@@ -520,11 +455,12 @@ mod tests {
 
 		let content = std::fs::read_to_string(dir.path().join("data.lua")).unwrap();
 
-		// Must contain the header and private namespace pattern
+		assert!(content.contains("Generated: "));
+		assert!(content.contains("Tool: wow-windmedia v0.1.0"));
 		assert!(content.contains("local _, addon = ..."));
-		assert!(content.contains("addon.data = {"));
+		assert!(content.contains("addon.data"));
+		assert!(!content.contains("--[[table:"));
 
-		// Must be parseable by Lua (read back succeeds)
 		assert!(read_data(dir.path()).is_ok());
 	}
 
@@ -644,7 +580,15 @@ mod tests {
 		write_data(dir.path(), &data).unwrap();
 		let content = std::fs::read_to_string(dir.path().join("data.lua")).unwrap();
 
+		assert!(content.contains("Generated: "));
 		assert!(content.contains("Tool: wow-windmedia v9.9.9-test"));
+		assert!(!content.contains("Entries:"));
+		assert!(!content.contains("DO NOT EDIT MANUALLY"));
+		assert!(!content.contains("--[[table:"));
 		assert!(content.contains("version = \"9.9.9-test\""));
+
+		let read_back = read_data(dir.path()).unwrap();
+		assert_eq!(read_back.version, "9.9.9-test");
+		assert_eq!(read_back.entries[0].key, "Version Probe");
 	}
 }

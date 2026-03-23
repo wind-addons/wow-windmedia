@@ -11,7 +11,7 @@ documentation = "https://docs.rs/wow-windmedia"
 homepage = "https://github.com/wind-addons/wow-windmedia"
 keywords = ["wow", "sharedmedia", "addon", "libsharedmedia", "media"]
 categories = ["game-development", "multimedia"]
-include = ["src/**/*", "templates/**/*", "README.md", "LICENSE", "Cargo.toml"]
+include = ["src/**/*", "templates/**/*", "vendor/**/*", "README.md", "LICENSE", "Cargo.toml"]
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
