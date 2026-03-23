@@ -81,11 +81,10 @@ mod entry;
 mod error;
 mod lua_io;
 mod media;
-pub mod sanitize;
 pub mod template;
 
 /// The default addon directory name used by WindMedia.
-pub const ADDON_DIR_NAME: &str = "WindMedia";
+pub const ADDON_DIR_NAME: &str = "!!!WindMedia";
 
 pub use data::*;
 pub use entry::*;
