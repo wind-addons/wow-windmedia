@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
           components: rustfmt
@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
@@ -75,7 +75,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y subversion
       - name: "⬇️ Export vendor libraries"
         run: bun run update-vendor
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: vendor
           path: vendor
@@ -90,13 +90,13 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
           components: clippy
       - uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: vendor
           path: vendor
@@ -116,12 +116,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: vendor
           path: vendor
@@ -137,12 +137,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: vendor
           path: vendor
@@ -160,12 +160,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: 1.94.0
       - uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: vendor
           path: vendor
@@ -181,12 +181,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor"
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: vendor
           path: vendor
