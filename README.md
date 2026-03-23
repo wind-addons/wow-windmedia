@@ -75,11 +75,11 @@ This keeps the runtime model small, deterministic, and easy to integrate into hi
 
 The addon name is derived from the folder path — no hardcoding required.
 
-| Folder name        | TOC file              | TOC Title   |
-| ----------------- | --------------------- | ----------- |
-| `WindMedia`       | `WindMedia.toc`       | `WindMedia` |
-| `!!!WindMedia`     | `!!!WindMedia.toc`     | `WindMedia` |
-| `!!MyAddon`        | `!!MyAddon.toc`        | `MyAddon`    |
+| Folder name    | TOC file           | TOC Title   |
+| -------------- | ------------------ | ----------- |
+| `WindMedia`    | `WindMedia.toc`    | `WindMedia` |
+| `!!!WindMedia` | `!!!WindMedia.toc` | `WindMedia` |
+| `!!MyAddon`    | `!!MyAddon.toc`    | `MyAddon`   |
 
 Leading `!` characters are stripped from the title automatically.
 
