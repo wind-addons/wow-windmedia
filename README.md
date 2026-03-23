@@ -111,6 +111,27 @@ This runs `svn export` for libsharedmedia-3.0 and fetches serpent from GitHub. T
 | Bun       | Vendor script and JS toolchain   |
 | SVN       | Vendor download (libsharedmedia) |
 
+#### Install SVN
+
+**Windows** — included with TortoiseSVN or install separately:
+
+```bash
+# VisualSVN provides a standalone svn CLI for Windows
+# https://www.visualsvn.com/downloads/
+```
+
+**macOS:**
+
+```bash
+brew install subversion
+```
+
+**Linux (Debian/Ubuntu):**
+
+```bash
+sudo apt-get install subversion
+```
+
 ### Setup
 
 ```bash
@@ -140,9 +161,9 @@ prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
 
 ## 📚 Documentation
 
-- Contributor guidance: [`CONTRIBUTING.md`](./CONTRIBUTING.md)
-- Publishing workflow: [`PUBLISHING.md`](./PUBLISHING.md)
+- [Contributor guidance](./CONTRIBUTING.md)
+- [Publishing workflow](./PUBLISHING.md)
 
 ## 📄 License
 
-[`MIT LICENSE`](./LICENSE).
+[MIT LICENSE](./LICENSE)
