@@ -191,4 +191,4 @@ jobs:
           name: vendor
           path: vendor
       - name: "✅ Dry-run package"
-        run: cargo package -p wow-windmedia
+        run: cargo package -p wow-windmedia --allow-dirty

@@ -114,7 +114,7 @@ fn e2e_full_lifecycle_all_media_types() {
 	assert!(addon_dir.join(&fnt.entry.file).exists());
 	let meta = fnt.entry.metadata.as_ref().unwrap();
 	assert!(meta.font_num_glyphs.is_some_and(|n| n > 0));
-	assert!(!meta.font_family.as_deref().map_or(true, |s| s.is_empty()));
+	assert!(!meta.font_family.as_deref().is_none_or(|s| s.is_empty()));
 
 	// Phase 6: Verify auto-generated Lua uses single-line comments
 	let lua = std::fs::read_to_string(addon_dir.join("data.lua")).unwrap();
