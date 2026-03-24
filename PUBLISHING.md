@@ -1,10 +1,10 @@
-# Release Process
+# 🚀 Release Process
 
 This document describes the automated release pipeline for `wow-windmedia`.
 
 Releases are driven by [cocogitto](https://docs.cocogitto.io/) — a conventional-commit–aware versioning tool integrated into GitHub Actions. Version bumps, changelog generation, crate publication, and GitHub Release creation are all handled in a single workflow run.
 
-## Quick Start
+## ⚡ Quick Start
 
 1. Merge your PR to `main` using conventional commit messages
 2. Navigate to **Actions → Release → Run workflow**
@@ -12,22 +12,22 @@ Releases are driven by [cocogitto](https://docs.cocogitto.io/) — a conventiona
 
 That's it. The pipeline handles the rest.
 
-## Pipeline Overview
+## 🔄 Pipeline Overview
 
 ```mermaid
 flowchart LR
-    A["Trigger<br/><small>workflow_dispatch</small>"] --> B["Vendor<br/><small>svn + bun</small>"]
-    B --> C["Verify<br/><small>fmt · clippy · test · docs · package</small>"]
-    C --> D["Release<br/><small>bump · publish · GitHub Release</small>"]
+    A["Trigger<br/><small>workflow_dispatch</small>"] --> B["📦 Vendor<br/><small>svn + bun</small>"]
+    B --> C["✅ Verify<br/><small>fmt · clippy · test · docs · package</small>"]
+    C --> D["🚀 Release<br/><small>bump · publish · GitHub Release</small>"]
 ```
 
 The pipeline runs three sequential jobs:
 
-### 1. Vendor
+### 1. 📦 Vendor
 
 Downloads third-party WoW libraries (LibSharedMedia-3.0, Serpent) via `svn export` and GitHub fetch. The resulting `vendor/` directory is shared across subsequent jobs as a workflow artifact.
 
-### 2. Verify
+### 2. ✅ Verify
 
 Runs the full quality gate — identical to the checks in the regular CI pipeline:
 
@@ -40,7 +40,7 @@ Runs the full quality gate — identical to the checks in the regular CI pipelin
 
 If any step fails, the pipeline stops. Nothing is published.
 
-### 3. Release
+### 3. 🚀 Release
 
 Only runs if verification passes. Uses [cocogitto-action](https://github.com/cocogitto/cocogitto-action) to perform the following in sequence:
 
@@ -50,7 +50,7 @@ Only runs if verification passes. Uses [cocogitto-action](https://github.com/coc
 4. **Push** — `post_bump_hooks` push the version commit and tag to `main`
 5. **GitHub Release** — creates a GitHub Release with the changelog body
 
-## Bump Types
+## 📊 Bump Types
 
 | Input       | Effect                                                                    | Example                                        |
 | ----------- | ------------------------------------------------------------------------- | ---------------------------------------------- |
@@ -62,7 +62,7 @@ Only runs if verification passes. Uses [cocogitto-action](https://github.com/coc
 
 Use `auto` unless you need to override cocogitto's analysis.
 
-## Prerequisites
+## 🔑 Prerequisites
 
 ### Repository Configuration
 
@@ -74,7 +74,7 @@ A GitHub **environment** named `release` must exist (**Settings → Environments
 
 `GITHUB_TOKEN` is provided automatically by GitHub Actions and used for tag pushes and Release creation — no manual configuration needed.
 
-### Commit Messages
+### 📝 Commit Messages
 
 Cocogitto determines version bumps from conventional commit prefixes. The recognized types are configured in `cog.toml`:
 
@@ -92,7 +92,7 @@ Cocogitto determines version bumps from conventional commit prefixes. The recogn
 
 `chore` and `style` commits are excluded from the changelog.
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
 ### `cog bump auto` fails with "no conventional commits found"
 
@@ -118,7 +118,7 @@ cargo test -p wow-windmedia
 cargo publish -p wow-windmedia --dry-run --allow-dirty
 ```
 
-## Post-Release Checklist
+## ✅ Post-Release Checklist
 
 After a successful release, verify:
 

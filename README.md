@@ -8,7 +8,7 @@ A Rust library for building and maintaining [World of Warcraft SharedMedia](http
 
 It manages `data.lua`, generates `loader.lua` and `.toc`, converts supported media formats into WoW-compatible outputs, and keeps the addon directory in a consistent state through a small stateless API.
 
-## Installation
+## 📦 Installation
 
 ```toml
 [dependencies]
@@ -17,7 +17,7 @@ wow-windmedia = "0.1"
 
 Requires Rust 1.94+ (edition 2024).
 
-## Quick Start
+## 🚀 Quick Start
 
 ```rust
 use std::path::Path;
@@ -48,7 +48,7 @@ fn main() -> Result<(), wow_windmedia::Error> {
 }
 ```
 
-## Supported Media Types
+## 🧩 Supported Media Types
 
 | Media type   | Accepted input                                   | Stored output      |
 | ------------ | ------------------------------------------------ | ------------------ |
@@ -58,7 +58,7 @@ fn main() -> Result<(), wow_windmedia::Error> {
 | `font`       | `.ttf`, `.otf`                                   | original font file |
 | `sound`      | `.ogg`, `.mp3`, `.wav`                           | `.ogg`             |
 
-## Design
+## 🧭 Design
 
 The crate treats `data.lua` as the single source of truth.
 
@@ -71,7 +71,7 @@ Every write operation follows the same model:
 
 This keeps the runtime model small, deterministic, and easy to integrate into higher-level tools.
 
-### Addon Name Resolution
+### 🏷️ Addon Name Resolution
 
 The addon name is derived from the folder path — no hardcoding required.
 
@@ -83,7 +83,7 @@ The addon name is derived from the folder path — no hardcoding required.
 
 Leading `!` characters are stripped from the title automatically.
 
-### Addon Layout
+### 🗂️ Addon Layout
 
 ```text
 WindMedia/                      # or !!!WindMedia — both work
@@ -104,11 +104,11 @@ WindMedia/                      # or !!!WindMedia — both work
     └── statusbar/
 ```
 
-## See Also
+## 📚 See Also
 
 - [Contributing](./CONTRIBUTING.md) — development setup, commit conventions, and PR expectations
 - [Release Process](./PUBLISHING.md) — how releases are automated and published to crates.io
 
-## License
+## 📄 License
 
 [MIT](./LICENSE).

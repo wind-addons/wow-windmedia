@@ -2,12 +2,12 @@
 
 Contributions are welcome. This guide covers what you need to get started.
 
-## Before You Start
+## 🎯 Before You Start
 
 - Read [README.md](./README.md) for project goals and supported scope
 - Read [PUBLISHING.md](./PUBLISHING.md) if your change affects the release pipeline
 
-## Design Principles
+## 🏗️ Design Principles
 
 Keep changes aligned with these goals:
 
@@ -17,7 +17,7 @@ Keep changes aligned with these goals:
 - **Small, stable API** — avoid exposing internal helpers without a strong reason
 - **Explicit failures** — prefer clear errors over silent fallbacks
 
-## Prerequisites
+## 📋 Prerequisites
 
 | Tool                   | Purpose                              |
 | ---------------------- | ------------------------------------ |
@@ -25,7 +25,7 @@ Keep changes aligned with these goals:
 | [Bun](https://bun.sh/) | Vendor script and JS toolchain       |
 | SVN                    | Vendor download (LibSharedMedia-3.0) |
 
-### Platform-specific setup
+### 💻 Platform-specific setup
 
 **Windows** — SVN is included with [TortoiseSVN](https://tortoisesvn.net/) or [VisualSVN](https://www.visualsvn.com/downloads/).
 
@@ -41,7 +41,7 @@ brew install subversion
 sudo apt-get install subversion
 ```
 
-## Setup
+## ⚙️ Setup
 
 ```bash
 bun install
@@ -50,7 +50,7 @@ bun run update-vendor
 
 This downloads third-party WoW libraries into `vendor/`. The directory is gitignored — Rust embeds the files at build time via `include_str!`.
 
-## Checks
+## ✅ Checks
 
 Run these before opening a PR:
 
@@ -64,7 +64,7 @@ bun run lint
 bun run format:check
 ```
 
-## Pre-commit Hooks
+## 🪝 Pre-commit Hooks
 
 ```bash
 cargo install --locked cocogitto
@@ -73,7 +73,7 @@ prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
 
 Hook and commit configuration lives in `prek.toml` and `cog.toml`.
 
-## Commit Convention
+## 💬 Commit Convention
 
 The repository uses [Conventional Commits](https://www.conventionalcommits.org/).
 
@@ -87,7 +87,7 @@ Examples:
 
 Cocogitto uses these prefixes to determine version bumps and generate changelogs. See `cog.toml` for the full type configuration.
 
-## Pull Requests
+## 📬 Pull Requests
 
 Keep PRs focused and reviewable. Good PRs:
 
@@ -97,7 +97,7 @@ Keep PRs focused and reviewable. Good PRs:
 - update docs when the public API or workflows change
 - avoid unrelated cleanup in the same patch
 
-## API Changes
+## ⚠️ API Changes
 
 Be conservative with public API additions:
 
@@ -105,13 +105,13 @@ Be conservative with public API additions:
 - prefer additive changes over breaking changes
 - avoid locking in awkward APIs that will be expensive to maintain long-term
 
-## Documentation
+## 📝 Documentation
 
 - keep tone concise and professional
 - usage examples should be realistic and minimal
-- emoji are fine in headings, used sparingly
+- emoji in headings are welcome, used sparingly
 
-## Reporting Bugs
+## 🐛 Reporting Bugs
 
 Include when possible:
 
@@ -120,6 +120,6 @@ Include when possible:
 - media type and input format
 - minimal reproduction
 
-## Conduct
+## 🤝 Conduct
 
 By participating, you agree to follow the expectations in [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
