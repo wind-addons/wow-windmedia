@@ -2,6 +2,16 @@ from_latest_tag = true
 ignore_merge_commits = true
 ignore_fixup_commits = true
 
+pre_bump_hooks = [
+    "cargo set-version {{version}}",
+    "git add :/Cargo.toml",
+]
+
+post_bump_hooks = [
+    "git push",
+    "git push origin {{version}}",
+]
+
 [commit_types]
 feat = { changelog_title = "Features" }
 fix = { changelog_title = "Bug Fixes" }

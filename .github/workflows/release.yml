@@ -1,22 +1,49 @@
-name: Release
+name: "🚀 Release"
 
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: "Version to publish (for example: 0.1.0)"
+      bump:
+        description: "Bump type (auto, major, minor, patch, or version)"
         required: true
+        default: "auto"
         type: string
 
 permissions:
   contents: write
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
-  verify:
-    name: Verify release state
+  vendor:
+    name: "📦 Download Vendor"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: "📥 Checkout"
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+      - name: "📦 Install dependencies"
+        run: bun install --frozen-lockfile
+      - name: "📦 Install SVN"
+        run: sudo apt-get update && sudo apt-get install -y subversion
+      - name: "⬇️ Export vendor libraries"
+        run: bun run update-vendor
+      - uses: actions/upload-artifact@v7
+        with:
+          name: vendor
+          path: vendor
+          retention-days: 1
+
+  verify:
+    name: "✅ Verify"
+    runs-on: ubuntu-latest
+    needs: [vendor]
+    steps:
+      - name: "📥 Checkout"
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@v1
@@ -24,42 +51,63 @@ jobs:
           toolchain: stable
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
-      - name: Format
+      - name: "📦 Download vendor"
+        uses: actions/download-artifact@v8
+        with:
+          name: vendor
+          path: vendor
+      - name: "🎨 Check formatting"
         run: cargo fmt --all --check
-      - name: Install StyLua
+      - name: "📦 Install StyLua"
         run: cargo install --locked stylua
-      - name: Check Lua template formatting
+      - name: "🌙 Check Lua formatting"
         run: stylua --check templates/*.lua
-      - name: Clippy
+      - name: "🧹 Clippy"
         run: cargo clippy -p wow-windmedia --all-targets -- -D warnings
-      - name: Test
-        run: cargo test -p wow-windmedia --lib
-      - name: Docs
+      - name: "🧪 Tests"
+        run: cargo test -p wow-windmedia
+      - name: "📖 Docs"
         env:
           RUSTDOCFLAGS: -D warnings
         run: cargo doc -p wow-windmedia --no-deps
-      - name: Package dry run
-        run: cargo publish -p wow-windmedia --dry-run
+      - name: "📦 Package dry run"
+        run: cargo publish -p wow-windmedia --dry-run --allow-dirty
 
-  publish:
-    name: Publish to crates.io
+  release:
+    name: "🚀 Bump, Publish & Release"
     runs-on: ubuntu-latest
-    needs: verify
+    needs: [verify]
     environment: release
     steps:
-      - uses: actions/checkout@v6
+      - name: "📥 Checkout"
+        uses: actions/checkout@v6
         with:
-          persist-credentials: false
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
-      - name: Verify requested version
-        shell: bash
-        run: |
-          actual=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name=="wow-windmedia") | .version')
-          test "$actual" = "${{ github.event.inputs.version }}"
-      - name: Publish
+      - name: "🚀 Bump version and create tag"
+        id: release
+        uses: cocogitto/cocogitto-action@v3
+        with:
+          command: bump
+          args: ${{ github.event.inputs.bump }}
+      - name: "📋 Generate changelog"
+        run: cog changelog --at ${{ steps.release.outputs.version }} -t full_hash > GITHUB_CHANGELOG.md
+      - name: "📦 Download vendor"
+        uses: actions/download-artifact@v8
+        with:
+          name: vendor
+          path: vendor
+      - name: "📦 Publish to crates.io"
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        run: cargo publish -p wow-windmedia
+        # --allow-dirty: vendor artifacts and GITHUB_CHANGELOG.md are untracked
+        run: cargo publish -p wow-windmedia --allow-dirty
+      - name: "🚀 Create GitHub Release"
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: GITHUB_CHANGELOG.md
+          tag_name: ${{ steps.release.outputs.version }}

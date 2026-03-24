@@ -1,45 +1,33 @@
 # Contributing to wow-windmedia
 
-Thanks for your interest in improving `wow-windmedia`.
+Contributions are welcome. This guide covers what you need to get started.
 
-This project aims to be a polished, predictable Rust library for managing World of Warcraft SharedMedia assets. Contributions are welcome, but changes should preserve the crate's small public surface, stateless design, and release quality.
+## 🎯 Before You Start
 
-## Before You Start
+- Read [README.md](./README.md) for project goals and supported scope
+- Read [PUBLISHING.md](./PUBLISHING.md) if your change affects the release pipeline
 
-- Read `README.md` for project goals and supported scope
-- Read `PUBLISHING.md` if your change affects release behavior
+## 🏗️ Design Principles
 
-## Development Principles
+Keep changes aligned with these goals:
 
-Please keep changes aligned with these principles:
-
-- **Stateless by design** — no hidden runtime state or background synchronization
+- **Stateless** — no hidden runtime state or background synchronization
 - **`data.lua` is the source of truth** — avoid introducing parallel metadata stores
-- **WoW-compatible outputs** — generated assets should remain practical for real addon usage
-- **Small, stable API surface** — avoid exposing internal helpers without a strong reason
-- **Clear failure modes** — prefer explicit errors over silent fallback behavior
+- **WoW-compatible outputs** — generated assets should work in real addons
+- **Small, stable API** — avoid exposing internal helpers without a strong reason
+- **Explicit failures** — prefer clear errors over silent fallbacks
 
-## Prerequisites
+## 📋 Prerequisites
 
-| Tool      | Purpose                          |
-| --------- | -------------------------------- |
-| Rust 1.94 | Build and test                   |
-| Bun       | Vendor script and JS toolchain   |
-| SVN       | Vendor download (libsharedmedia) |
+| Tool                   | Purpose                              |
+| ---------------------- | ------------------------------------ |
+| Rust 1.94+             | Build and test                       |
+| [Bun](https://bun.sh/) | Vendor script and JS toolchain       |
+| SVN                    | Vendor download (LibSharedMedia-3.0) |
 
-### Install Rust
+### 💻 Platform-specific setup
 
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
-### Install Bun
-
-See [bun.sh](https://bun.sh/).
-
-### Install SVN
-
-**Windows** — included with TortoiseSVN or install separately via [VisualSVN](https://www.visualsvn.com/downloads/).
+**Windows** — SVN is included with [TortoiseSVN](https://tortoisesvn.net/) or [VisualSVN](https://www.visualsvn.com/downloads/).
 
 **macOS:**
 
@@ -53,51 +41,55 @@ brew install subversion
 sudo apt-get install subversion
 ```
 
-## Setup
+## ⚙️ Setup
 
 ```bash
 bun install
 bun run update-vendor
 ```
 
-## Checks
+This downloads third-party WoW libraries into `vendor/`. The directory is gitignored — Rust embeds the files at build time via `include_str!`.
+
+## ✅ Checks
+
+Run these before opening a PR:
 
 ```bash
 cargo fmt --all --check
 cargo clippy -p wow-windmedia --all-targets -- -D warnings
 cargo test -p wow-windmedia
 cargo doc -p wow-windmedia --no-deps
+stylua --check templates/*.lua
 bun run lint
 bun run format:check
-stylua --check templates/*.lua
 ```
 
-## Pre-commit Hooks
+## 🪝 Pre-commit Hooks
 
 ```bash
 cargo install --locked cocogitto
 prek install --hook-type pre-commit --hook-type commit-msg --hook-type pre-push
 ```
 
-This crate keeps its hook and commit configuration in `prek.toml` and `cog.toml`.
+Hook and commit configuration lives in `prek.toml` and `cog.toml`.
 
-## Commit Convention
+## 💬 Commit Convention
 
-The repository uses **Conventional Commits**.
+The repository uses [Conventional Commits](https://www.conventionalcommits.org/).
 
 Examples:
 
 - `feat: add BLP import support`
 - `fix: sync generated file version metadata`
-- `docs: refine publishing guide`
+- `docs: clarify addon name resolution`
 - `test: add Lua 5.1 loader runtime coverage`
-- `ci: add macOS CI job`
+- `ci: pin GitHub Actions to Node.js 24`
 
-## Pull Request Expectations
+Cocogitto uses these prefixes to determine version bumps and generate changelogs. See `cog.toml` for the full type configuration.
 
-Please keep pull requests focused and reviewable.
+## 📬 Pull Requests
 
-Good pull requests usually:
+Keep PRs focused and reviewable. Good PRs:
 
 - explain the problem being solved
 - describe the chosen approach and tradeoffs
@@ -105,41 +97,29 @@ Good pull requests usually:
 - update docs when the public API or workflows change
 - avoid unrelated cleanup in the same patch
 
-## Commit and Change Quality
+## ⚠️ API Changes
 
-Before opening a PR, make sure:
-
-- the crate builds cleanly
-- tests pass locally
-- public-facing changes are documented
-- new files and docs use professional English
-
-## API Changes
-
-For changes that affect the public API, please be extra conservative:
+Be conservative with public API additions:
 
 - avoid adding public modules or functions unless necessary
-- avoid locking in awkward APIs that will be expensive to support after `0.1.0`
-- prefer additive changes over breaking changes where practical
+- prefer additive changes over breaking changes
+- avoid locking in awkward APIs that will be expensive to maintain long-term
 
-## Documentation Changes
+## 📝 Documentation
 
-Docs should be concise, professional, and easy to scan.
+- keep tone concise and professional
+- usage examples should be realistic and minimal
+- emoji in headings are welcome, used sparingly
 
-- README tone should stay polished and release-oriented
-- Emoji are welcome, but should be used sparingly and deliberately
-- Usage examples should be realistic and minimal
+## 🐛 Reporting Bugs
 
-## Reporting Issues
+Include when possible:
 
-If you are reporting a bug, please include:
+- crate version and Rust version
+- operating system
+- media type and input format
+- minimal reproduction
 
-- the crate version
-- your Rust version
-- your operating system
-- the asset type and input format involved
-- a minimal reproduction, if possible
+## 🤝 Conduct
 
-## Conduct
-
-By participating in this project, you agree to follow the expectations in `CODE_OF_CONDUCT.md`.
+By participating, you agree to follow the expectations in [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).

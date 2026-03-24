@@ -1,10 +1,10 @@
 # wow-windmedia
 
 [![CI](https://github.com/wind-addons/wow-windmedia/actions/workflows/ci.yml/badge.svg)](https://github.com/wind-addons/wow-windmedia/actions/workflows/ci.yml)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Rust 1.94+](https://img.shields.io/badge/rust-1.94.0+-blue.svg)](https://doc.rust-lang.org/edition-guide/rust-2024/)
 
-`wow-windmedia` is a Rust library for building and maintaining World of Warcraft SharedMedia addons.
+A Rust library for building and maintaining [World of Warcraft SharedMedia](https://wowpedia.fandom.com/wiki/LibSharedMedia-3.0) addons.
 
 It manages `data.lua`, generates `loader.lua` and `.toc`, converts supported media formats into WoW-compatible outputs, and keeps the addon directory in a consistent state through a small stateless API.
 
@@ -15,7 +15,7 @@ It manages `data.lua`, generates `loader.lua` and `.toc`, converts supported med
 wow-windmedia = "0.1"
 ```
 
-**Prerequisites:** Rust 1.94+ (edition 2024).
+Requires Rust 1.94+ (edition 2024).
 
 ## 🚀 Quick Start
 
@@ -71,11 +71,11 @@ Every write operation follows the same model:
 
 This keeps the runtime model small, deterministic, and easy to integrate into higher-level tools.
 
-### Addon Name Resolution
+### 🏷️ Addon Name Resolution
 
 The addon name is derived from the folder path — no hardcoding required.
 
-| Folder name    | TOC file           | TOC Title   |
+| Folder name    | TOC file           | TOC title   |
 | -------------- | ------------------ | ----------- |
 | `WindMedia`    | `WindMedia.toc`    | `WindMedia` |
 | `!!!WindMedia` | `!!!WindMedia.toc` | `WindMedia` |
@@ -83,7 +83,7 @@ The addon name is derived from the folder path — no hardcoding required.
 
 Leading `!` characters are stripped from the title automatically.
 
-## 🗂️ Addon Layout
+### 🗂️ Addon Layout
 
 ```text
 WindMedia/                      # or !!!WindMedia — both work
@@ -104,23 +104,11 @@ WindMedia/                      # or !!!WindMedia — both work
     └── statusbar/
 ```
 
-## 📦 Vendor Management
+## 📚 See Also
 
-Vendor libraries (LibSharedMedia-3.0, Serpent) are gitignored and regenerated via a Bun script.
-
-```bash
-# Requires: bun, svn
-bun install
-bun run update-vendor
-```
-
-This runs `svn export` for libsharedmedia-3.0 and fetches serpent from GitHub. The `vendor/` directory must exist before building (Rust embeds files via `include_str!`).
-
-## 📚 More
-
-- [Development setup](./CONTRIBUTING.md) — prerequisites, checks, hooks
-- [Publishing workflow](./PUBLISHING.md) — release process and crates.io
+- [Contributing](./CONTRIBUTING.md) — development setup, commit conventions, and PR expectations
+- [Release Process](./PUBLISHING.md) — how releases are automated and published to crates.io
 
 ## 📄 License
 
-[MIT LICENSE](./LICENSE).
+[MIT](./LICENSE).

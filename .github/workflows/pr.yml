@@ -16,11 +16,12 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: dtolnay/rust-toolchain@v1
-        with:
-          toolchain: stable
       - name: "📦 Install cocogitto"
-        run: cargo install --locked cocogitto
+        uses: cocogitto/cocogitto-action@v3
+        with:
+          check: "false"
+          git-user: github-actions
+          git-user-email: github-actions[bot]@users.noreply.github.com
       - name: "🔍 Verify PR title"
         shell: bash
         run: |

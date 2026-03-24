@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Report a defect in wow-windmedia
-title: "[bug] "
+title: "bug: "
 labels: bug
 assignees: ""
 ---
@@ -21,7 +21,7 @@ assignees: ""
 - media type:
 - source format:
 
-## Reproduction
+## Steps to Reproduce
 
 <!-- Minimal steps or code sample. -->
 
