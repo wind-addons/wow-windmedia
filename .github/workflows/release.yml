@@ -88,11 +88,12 @@ jobs:
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
-      - name: "📦 Install cocogitto"
-        run: cargo install --locked cocogitto
       - name: "🚀 Bump version and create tag"
         id: release
-        run: cog bump ${{ github.event.inputs.bump }}
+        uses: cocogitto/cocogitto-action@v3
+        with:
+          command: bump
+          args: ${{ github.event.inputs.bump }}
       - name: "📋 Generate changelog"
         run: cog changelog --at ${{ steps.release.outputs.version }} -t full_hash > GITHUB_CHANGELOG.md
       - name: "📦 Download vendor"
@@ -103,6 +104,7 @@ jobs:
       - name: "📦 Publish to crates.io"
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        # --allow-dirty: vendor artifacts and GITHUB_CHANGELOG.md are untracked
         run: cargo publish -p wow-windmedia --allow-dirty
       - name: "🚀 Create GitHub Release"
         uses: softprops/action-gh-release@v2
