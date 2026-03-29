@@ -61,7 +61,7 @@ jobs:
         run: bun run lint
 
   vendor:
-    name: "📦 Download Vendor"
+    name: "📦 Materialize Vendor Snapshot"
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout"
@@ -73,7 +73,7 @@ jobs:
         run: bun install --frozen-lockfile
       - name: "📦 Install SVN"
         run: sudo apt-get update && sudo apt-get install -y subversion
-      - name: "⬇️ Export vendor libraries"
+      - name: "⬇️ Materialize pinned vendor snapshot"
         run: bun run update-vendor
       - uses: actions/upload-artifact@v7
         with:
@@ -95,7 +95,7 @@ jobs:
           toolchain: stable
           components: clippy
       - uses: Swatinem/rust-cache@v2
-      - name: "📦 Download vendor"
+      - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
           name: vendor
@@ -120,7 +120,7 @@ jobs:
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
-      - name: "📦 Download vendor"
+      - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
           name: vendor
@@ -141,7 +141,7 @@ jobs:
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
-      - name: "📦 Download vendor"
+      - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
           name: vendor
@@ -164,7 +164,7 @@ jobs:
         with:
           toolchain: 1.94.0
       - uses: Swatinem/rust-cache@v2
-      - name: "📦 Download vendor"
+      - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
           name: vendor
@@ -185,7 +185,7 @@ jobs:
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
-      - name: "📦 Download vendor"
+      - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
           name: vendor

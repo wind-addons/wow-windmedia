@@ -1,0 +1,33 @@
+name: "📦 Refresh Vendor Snapshot"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    name: "🔄 Refresh pinned vendor metadata"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "📥 Checkout"
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+      - name: "📦 Install dependencies"
+        run: bun install --frozen-lockfile
+      - name: "📦 Install SVN"
+        run: sudo apt-get update && sudo apt-get install -y subversion
+      - name: "🔄 Refresh vendor snapshot"
+        run: bun run refresh-vendor
+      - name: "📋 Show manifest diff"
+        run: git diff -- vendor.lock.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: vendor-refresh-artifacts
+          path: |
+            vendor.lock.json
+            vendor
+          retention-days: 7
