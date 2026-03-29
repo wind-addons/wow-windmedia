@@ -521,7 +521,7 @@ mod tests {
 		for line in content.replace("\r\n", "\n").lines() {
 			let trimmed = line.trim_start();
 			let indent = &line[..line.len() - trimmed.len()];
-			let normalized = if trimmed.starts_with("Generated: ") {
+			let normalized = if trimmed.starts_with("-- Generated: ") {
 				format!("{indent}Generated: <GENERATED_AT>")
 			} else if trimmed.starts_with("generated_at = ") || trimmed.starts_with("imported_at = ") {
 				let ts_normalized = strip_timestamp_value(trimmed);
