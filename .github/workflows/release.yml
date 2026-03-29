@@ -67,7 +67,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
-          args: --check templates/*.lua
+          args: false
+      - name: "✅ Check Lua formatting"
+        run: stylua --check templates/*.lua
       - name: "🧹 Clippy"
         run: cargo clippy -p wow-windmedia --all-targets -- -D warnings
       - name: "🧪 Tests"

@@ -41,7 +41,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
-          args: --check templates/*.lua
+          args: false
+      - name: "✅ Check Lua formatting"
+        run: stylua --check templates/*.lua
 
   oxc:
     name: "🔎 OXC (lint + format)"
