@@ -90,10 +90,10 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: "🚀 Bump version and create tag"
         id: release
-        uses: cocogitto/cocogitto-action@v3
+        uses: cocogitto/cocogitto-action@v4
         with:
           command: bump
-          args: ${{ github.event.inputs.bump }}
+          args: --${{ github.event.inputs.bump }}
       - name: "📋 Generate changelog"
         run: cog changelog --at ${{ steps.release.outputs.version }} -t full_hash > GITHUB_CHANGELOG.md
       - name: "📦 Download vendor snapshot"
