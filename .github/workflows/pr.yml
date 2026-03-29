@@ -33,11 +33,11 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
             });
-            return data.title;
+            core.setOutput('title', data.title);
       - name: "🔍 Verify PR title"
         shell: bash
         run: |
-          title='${{ steps.pr_title.outputs.result }}'
+          title='${{ steps.pr_title.outputs.title }}'
           pattern='^(feat|fix|docs|refactor|test|ci|chore|build|perf|style|revert)(\([a-zA-Z0-9._/-]+\))?!?: .+'
           if [[ ! "$title" =~ $pattern ]]; then
             echo "Invalid PR title: $title"
