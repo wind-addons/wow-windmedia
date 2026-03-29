@@ -15,7 +15,8 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: oven-sh/setup-bun@v2
+      - name: "🥟 Setup Bun"
+        uses: oven-sh/setup-bun@v2
       - name: "📦 Install dependencies"
         run: bun install --frozen-lockfile
       - name: "📦 Install SVN"
@@ -24,7 +25,8 @@ jobs:
         run: bun run refresh-vendor
       - name: "📋 Show manifest diff"
         run: git diff -- vendor.lock.json
-      - uses: actions/upload-artifact@v7
+      - name: "📤 Upload refresh artifacts"
+        uses: actions/upload-artifact@v7
         with:
           name: vendor-refresh-artifacts
           path: |

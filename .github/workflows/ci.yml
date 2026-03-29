@@ -20,7 +20,8 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@v1
+      - name: "🦀 Setup Rust toolchain"
+        uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
           components: rustfmt
@@ -35,14 +36,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@v1
-        with:
-          toolchain: stable
-      - uses: Swatinem/rust-cache@v2
       - name: "📦 Install StyLua"
-        run: cargo install --locked stylua
-      - name: "✅ Check formatting"
-        run: stylua --check templates/*.lua
+        uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: --check templates/*.lua
 
   oxc:
     name: "🔎 OXC (lint + format)"
@@ -52,7 +51,8 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: oven-sh/setup-bun@v2
+      - name: "🦀 Setup Bun"
+        uses: oven-sh/setup-bun@v2
       - name: "📦 Install dependencies"
         run: bun install --frozen-lockfile
       - name: "✅ Check formatting"
@@ -68,14 +68,16 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: oven-sh/setup-bun@v2
+      - name: "🦀 Setup Bun"
+        uses: oven-sh/setup-bun@v2
       - name: "📦 Install dependencies"
         run: bun install --frozen-lockfile
       - name: "📦 Install SVN"
         run: sudo apt-get update && sudo apt-get install -y subversion
       - name: "⬇️ Materialize pinned vendor snapshot"
         run: bun run update-vendor
-      - uses: actions/upload-artifact@v7
+      - name: "📤 Upload vendor snapshot"
+        uses: actions/upload-artifact@v7
         with:
           name: vendor
           path: vendor
@@ -90,11 +92,13 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@v1
+      - name: "🦀 Setup Rust toolchain"
+        uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
           components: clippy
-      - uses: Swatinem/rust-cache@v2
+      - name: "💾 Cache Rust artifacts"
+        uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
@@ -116,10 +120,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@v1
+      - name: "🦀 Setup Rust toolchain"
+        uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v2
+      - name: "💾 Cache Rust artifacts"
+        uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
@@ -137,10 +143,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@v1
+      - name: "🦀 Setup Rust toolchain"
+        uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v2
+      - name: "💾 Cache Rust artifacts"
+        uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
@@ -160,10 +168,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@v1
+      - name: "🦀 Setup Rust toolchain"
+        uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: 1.94.0
-      - uses: Swatinem/rust-cache@v2
+      - name: "💾 Cache Rust artifacts"
+        uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
@@ -181,10 +191,12 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@v1
+      - name: "🦀 Setup Rust toolchain"
+        uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v2
+      - name: "💾 Cache Rust artifacts"
+        uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8
         with:
