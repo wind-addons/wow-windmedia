@@ -105,6 +105,16 @@ Keep PRs focused and reviewable. Good PRs:
 - update docs when the public API or workflows change
 - avoid unrelated cleanup in the same patch
 
+PR titles must also follow [Conventional Commits](https://www.conventionalcommits.org/) because the PR check workflow validates the title directly.
+
+Examples:
+
+- `build: pin vendor snapshots and tighten release publishing`
+- `fix: preserve addon version metadata in generated files`
+- `docs: clarify the vendor refresh workflow`
+
+If you rename a PR after opening it, rerun the PR check only after the latest workflow changes are on the branch. The workflow reads the current live PR title at runtime, so the rerun should validate the updated title instead of the original event payload.
+
 ## ⚠️ API Changes
 
 Be conservative with public API additions:
