@@ -21,7 +21,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! wow-sharedmedia = "0.1"
+//! wow-sharedmedia = "0.2"
 //! ```
 //!
 //! ## Quick Start

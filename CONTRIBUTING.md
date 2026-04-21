@@ -21,7 +21,7 @@ Keep changes aligned with these goals:
 
 | Tool                   | Purpose                                              |
 | ---------------------- | ---------------------------------------------------- |
-| Rust 1.94+             | Build and test                                       |
+| Rust 1.95+             | Build and test                                       |
 | [Bun](https://bun.sh/) | Vendor snapshot script and JS toolchain              |
 | SVN                    | Vendor snapshot materialization (LibSharedMedia-3.0) |
 

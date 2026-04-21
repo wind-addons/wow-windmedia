@@ -2,7 +2,7 @@
 name = "wow-sharedmedia"
 version = "0.2.0"
 edition = "2024"
-rust-version = "1.94.0"
+rust-version = "1.95.0"
 license = "MIT"
 description = "Rust library for managing World of Warcraft SharedMedia (LibSharedMedia-3.0) assets — fonts, textures, sounds, borders, and statusbars"
 readme = "README.md"

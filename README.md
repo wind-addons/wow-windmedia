@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/fang2hou/wow-sharedmedia/actions/workflows/ci.yml/badge.svg)](https://github.com/fang2hou/wow-sharedmedia/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Rust 1.94+](https://img.shields.io/badge/rust-1.94.0+-blue.svg)](https://doc.rust-lang.org/edition-guide/rust-2024/)
+[![Rust 1.95+](https://img.shields.io/badge/rust-1.95.0+-blue.svg)](https://doc.rust-lang.org/edition-guide/rust-2024/)
 
-A Rust library for building and maintaining [World of Warcraft SharedMedia](https://wowpedia.fandom.com/wiki/LibSharedMedia-3.0) addons.
+A Rust library for building and maintaining [World of Warcraft SharedMedia](https://www.wowace.com/projects/libsharedmedia-3-0) addons.
 
 It manages `data.lua`, generates `loader.lua` and `.toc`, converts supported media formats into WoW-compatible outputs, and keeps the addon directory in a consistent state through a small stateless API.
 
@@ -14,10 +14,10 @@ Third-party Lua dependencies are embedded from a pinned vendor snapshot. Normal 
 
 ```toml
 [dependencies]
-wow-sharedmedia = "0.1"
+wow-sharedmedia = "0.2"
 ```
 
-Requires Rust 1.94+ (edition 2024).
+Requires Rust 1.95+ (edition 2024).
 
 ## 🚀 Quick Start
 
@@ -114,4 +114,4 @@ MyMedia/                        # or !!!MyMedia — both work
 
 ## 📄 License
 
-[MIT](./LICENSE).
+[MIT](./LICENSE)
