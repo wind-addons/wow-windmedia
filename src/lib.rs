@@ -1,4 +1,4 @@
-//! # wow-windmedia
+//! # wow-sharedmedia
 //!
 //! A Rust library for managing [World of Warcraft][wow] addon SharedMedia assets
 //! — fonts, textures, sounds, borders, and statusbars — powered by
@@ -6,7 +6,7 @@
 //!
 //! ## Overview
 //!
-//! `wow-windmedia` provides stateless, one-shot operations for:
+//! `wow-sharedmedia` provides stateless, one-shot operations for:
 //!
 //! - **Importing** media files (PNG, TGA, WebP, JPEG, BLP, TTF, OTF, OGG, MP3, WAV)
 //!   with automatic format conversion to WoW-compatible formats.
@@ -21,16 +21,16 @@
 //!
 //! ```toml
 //! [dependencies]
-//! wow-windmedia = "0.1"
+//! wow-sharedmedia = "0.1"
 //! ```
 //!
 //! ## Quick Start
 //!
 //! ```no_run
-//! use wow_windmedia::{ensure_addon_dir, import_media, read_data, ImportOptions, MediaType};
+//! use wow_sharedmedia::{ensure_addon_dir, import_media, read_data, ImportOptions, MediaType};
 //! use std::path::Path;
 //!
-//! fn main() -> Result<(), wow_windmedia::Error> {
+//! fn main() -> Result<(), wow_sharedmedia::Error> {
 //!
 //! // Initialize addon directory (creates data.lua, loader.lua, .toc, media/ subdirs)
 //! let addon_dir = Path::new("AddOns/WindMedia");

@@ -128,7 +128,7 @@ pub(crate) fn write_data(addon_dir: &Path, data: &AddonData) -> Result<(), Error
 	// Generate the Lua content
 	let body = serialize_addon_data(data)?;
 	let content = format!(
-		"-- Generated: {}\n-- Tool: wow-windmedia v{}\n\nlocal _, addon = ...\n\naddon.data = {}\n",
+		"-- Generated: {}\n-- Tool: wow-sharedmedia v{}\n\nlocal _, addon = ...\n\naddon.data = {}\n",
 		data.generated_at.format("%Y-%m-%dT%H:%M:%SZ"),
 		data.version,
 		body,
@@ -457,7 +457,7 @@ mod tests {
 		let content = std::fs::read_to_string(dir.path().join("data.lua")).unwrap();
 
 		assert!(content.contains("Generated: "));
-		assert!(content.contains("Tool: wow-windmedia v0.1.0"));
+		assert!(content.contains("Tool: wow-sharedmedia v0.1.0"));
 		assert!(content.contains("local _, addon = ..."));
 		assert!(content.contains("addon.data"));
 		assert!(!content.contains("--[[table:"));
@@ -582,7 +582,7 @@ mod tests {
 		let content = std::fs::read_to_string(dir.path().join("data.lua")).unwrap();
 
 		assert!(content.contains("Generated: "));
-		assert!(content.contains("Tool: wow-windmedia v9.9.9-test"));
+		assert!(content.contains("Tool: wow-sharedmedia v9.9.9-test"));
 		assert!(!content.contains("Entries:"));
 		assert!(!content.contains("DO NOT EDIT MANUALLY"));
 		assert!(!content.contains("--[[table:"));

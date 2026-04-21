@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-/// Core error type for the wow-windmedia library.
+/// Core error type for the wow-sharedmedia library.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
 	// === Addon Directory Errors ===

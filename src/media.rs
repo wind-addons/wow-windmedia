@@ -1113,7 +1113,7 @@ mod tests {
 
 		ensure_addon_dir(&addon_dir).unwrap();
 		let initial_snapshot = read_data_lua_snapshot(&addon_dir);
-		assert!(initial_snapshot.contains(&format!("Tool: wow-windmedia v{}", env!("CARGO_PKG_VERSION"))));
+		assert!(initial_snapshot.contains(&format!("Tool: wow-sharedmedia v{}", env!("CARGO_PKG_VERSION"))));
 		assert!(initial_snapshot.contains(&format!("version = \"{}\"", env!("CARGO_PKG_VERSION"))));
 		assert!(!initial_snapshot.contains("Entries:"));
 		assert!(!initial_snapshot.contains("--[[table:"));

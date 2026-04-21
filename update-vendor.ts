@@ -183,7 +183,7 @@ async function getLatestGitHubCommit(owner: string, repo: string, path: string):
 	const url = `https://api.github.com/repos/${owner}/${repo}/commits?${params.toString()}`;
 	const response = await fetch(url, {
 		headers: {
-			"User-Agent": "wow-windmedia-vendor-refresh",
+			"User-Agent": "wow-sharedmedia-vendor-refresh",
 			Accept: "application/vnd.github+json",
 		},
 	});
