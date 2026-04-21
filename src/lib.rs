@@ -27,19 +27,19 @@
 //! ## Quick Start
 //!
 //! ```no_run
-//! use wow_sharedmedia::{ensure_addon_dir, import_media, read_data, ImportOptions, MediaType};
+//! use wow_sharedmedia::{ensure_addon_dir, import_media, read_data, ImportOptions, MediaType, DEFAULT_MAX_BACKUPS};
 //! use std::path::Path;
 //!
 //! fn main() -> Result<(), wow_sharedmedia::Error> {
 //!
 //! // Initialize addon directory (creates data.lua, loader.lua, .toc, media/ subdirs)
 //! let addon_dir = Path::new("AddOns/WindMedia");
-//! ensure_addon_dir(addon_dir)?;
+//! ensure_addon_dir(addon_dir, DEFAULT_MAX_BACKUPS)?;
 //!
 //! // Import a statusbar texture
 //! let source = Path::new("assets/my-statusbar.png");
 //! let opts = ImportOptions::new(MediaType::Statusbar, "My Bar", &source);
-//! let result = import_media(addon_dir, opts)?;
+//! let result = import_media(addon_dir, opts, DEFAULT_MAX_BACKUPS)?;
 //! println!("Imported: {} (ID: {})", result.entry.key, result.entry.id);
 //!
 //! // Read all entries
@@ -94,6 +94,7 @@ use std::path::Path;
 pub use data::*;
 pub use entry::*;
 pub use error::*;
+pub use media::DEFAULT_MAX_BACKUPS;
 pub use media::*;
 
 /// Extract the addon name from its directory path.

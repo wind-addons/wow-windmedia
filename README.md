@@ -25,7 +25,7 @@ Requires Rust 1.94+ (edition 2024).
 use std::path::Path;
 
 use wow_sharedmedia::{
-    ensure_addon_dir, import_media, read_data, ImportOptions, MediaType,
+    ensure_addon_dir, import_media, read_data, ImportOptions, MediaType, DEFAULT_MAX_BACKUPS,
 };
 
 fn main() -> Result<(), wow_sharedmedia::Error> {
@@ -33,12 +33,13 @@ fn main() -> Result<(), wow_sharedmedia::Error> {
     // "!!!WindMedia" sorts to top in the addon list;
     // "WindMedia" works too.
     let addon_dir = Path::new("AddOns/WindMedia");
-    ensure_addon_dir(addon_dir)?;
+    ensure_addon_dir(addon_dir, DEFAULT_MAX_BACKUPS)?;
 
     let source = Path::new("assets/my-statusbar.png");
     let result = import_media(
         addon_dir,
         ImportOptions::new(MediaType::Statusbar, "My Statusbar", source),
+        DEFAULT_MAX_BACKUPS,
     )?;
 
     println!("Imported {} as {}", result.entry.key, result.entry.file);
