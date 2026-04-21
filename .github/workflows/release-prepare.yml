@@ -53,39 +53,90 @@ jobs:
           git switch -c "$branch"
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
 
-      - name: "🧮 Resolve bump arguments"
-        id: bump_args
+      - name: "🧮 Resolve version"
+        id: version
         shell: bash
         run: |
           set -euo pipefail
 
           bump="${{ inputs.bump }}"
+          current="$(grep -m1 '^version = ' Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')"
 
-          # When using --auto with no existing tags, fall back to --first-release
           if [ "$bump" = "auto" ] && [ -z "$(git tag --list)" ]; then
-            echo "No tags found — using --first-release for initial release"
-            echo "value=--first-release" >> "$GITHUB_OUTPUT"
+            # First release: use the current Cargo.toml version as-is
+            version="$current"
+            echo "first_release=true" >> "$GITHUB_OUTPUT"
+            echo "No tags found — using current version $version for initial release"
+          elif [ "$bump" = "auto" ]; then
+            # auto with existing tags: let cocogitto decide
+            echo "first_release=false" >> "$GITHUB_OUTPUT"
+            echo "use_cog=true" >> "$GITHUB_OUTPUT"
+            echo "version=" >> "$GITHUB_OUTPUT"
             exit 0
+          elif [ "$bump" = "major" ] || [ "$bump" = "minor" ] || [ "$bump" = "patch" ]; then
+            # Bump via cargo set-version
+            cargo set-version --"$bump"
+            version="$(grep -m1 '^version = ' Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')"
+            echo "first_release=false" >> "$GITHUB_OUTPUT"
+          else
+            # Exact version specified
+            cargo set-version "$bump"
+            version="$bump"
+            echo "first_release=false" >> "$GITHUB_OUTPUT"
           fi
 
-          case "$bump" in
-            auto|major|minor|patch)
-              echo "value=--$bump" >> "$GITHUB_OUTPUT"
-              ;;
-            *)
-              echo "value=$bump" >> "$GITHUB_OUTPUT"
-              ;;
-          esac
+          git add :/Cargo.toml
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "use_cog=false" >> "$GITHUB_OUTPUT"
 
-      - name: "🚀 Bump version"
-        id: bump
+      - name: "🚀 Bump via cocogitto (auto mode)"
+        if: steps.version.outputs.use_cog == 'true'
         uses: cocogitto/cocogitto-action@v4
         with:
           command: bump
-          args: ${{ steps.bump_args.outputs.value }}
+          args: --auto
 
-      - name: "📋 Regenerate changelog"
-        run: cog changelog > CHANGELOG.md
+      - name: "🧮 Read version after cog bump"
+        if: steps.version.outputs.use_cog == 'true'
+        id: cog_version
+        shell: bash
+        run: |
+          version="$(grep -m1 '^version = ' Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: "🚀 Commit version bump and create tag"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="${{ steps.version.outputs.version }}"
+          if [ -z "$version" ]; then
+            version="${{ steps.cog_version.outputs.version }}"
+          fi
+
+          if [ "${{ steps.version.outputs.use_cog }}" != "true" ]; then
+            git commit -m "chore(release): $version"
+          fi
+          git tag "$version"
+
+      - name: "📦 Install cocogitto for changelog"
+        run: cargo install cocogitto --locked
+
+      - name: "📋 Generate changelog"
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="${{ steps.version.outputs.version }}"
+          if [ -z "$version" ]; then
+            version="${{ steps.cog_version.outputs.version }}"
+          fi
+
+          if [ "${{ steps.version.outputs.first_release }}" = "true" ]; then
+            cog changelog --at "$version" > CHANGELOG.md || echo "## $version" > CHANGELOG.md
+          else
+            cog changelog --at "$version" > CHANGELOG.md
+          fi
 
       - name: "🧾 Include changelog in release commit"
         shell: bash
@@ -99,20 +150,31 @@ jobs:
           fi
 
       - name: "📤 Push release prep branch"
-        run: git push -u origin "${{ steps.branch.outputs.branch }}"
+        shell: bash
+        run: |
+          set -euo pipefail
+          git push -u origin "${{ steps.branch.outputs.branch }}" --tags
 
       - name: "🔀 Open release prep PR"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
+          set -euo pipefail
+
+          version="${{ steps.version.outputs.version }}"
+          if [ -z "$version" ]; then
+            version="${{ steps.cog_version.outputs.version }}"
+          fi
+
           gh pr create \
             --base main \
             --head "${{ steps.branch.outputs.branch }}" \
-            --title "chore(release): prepare ${{ steps.bump.outputs.version }}" \
+            --title "chore(release): prepare $version" \
             --body "$(cat <<EOF
           ## Summary
 
-          - prepare version ${{ steps.bump.outputs.version }} for review and merge
+          - prepare version $version for review and merge
           - update Cargo.toml and CHANGELOG.md before publishing
           - publish only after this PR merges to main and CI is green
           EOF
