@@ -11,14 +11,14 @@ pre_bump_hooks = [
 path = "CHANGELOG.md"
 
 [commit_types]
-feat = { changelog_title = "Features" }
-fix = { changelog_title = "Bug Fixes" }
-docs = { changelog_title = "Documentation" }
-refactor = { changelog_title = "Refactoring" }
-test = { changelog_title = "Tests" }
-ci = { changelog_title = "CI" }
-chore = { changelog_title = "Chores", omit_from_changelog = true }
-build = { changelog_title = "Build" }
-perf = { changelog_title = "Performance" }
-style = { changelog_title = "Style", omit_from_changelog = true }
-revert = { changelog_title = "Reverts" }
+feat = { changelog_title = "✨ Features" }
+fix = { changelog_title = "🐛 Bug Fixes" }
+docs = { changelog_title = "📝 Documentation" }
+refactor = { changelog_title = "♻️ Refactoring" }
+test = { changelog_title = "✅ Tests" }
+ci = { changelog_title = "👷 CI" }
+chore = { changelog_title = "🔧 Chores", omit_from_changelog = true }
+build = { changelog_title = "📦 Build" }
+perf = { changelog_title = "⚡ Performance" }
+style = { changelog_title = "💄 Style", omit_from_changelog = true }
+revert = { changelog_title = "⏪ Reverts" }
