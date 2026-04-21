@@ -1,5 +1,5 @@
--- WindMedia loader
--- Version: __WINDMEDIA_VERSION__
+-- Media registration loader
+-- Version: __VERSION__
 
 local ADDON_NAME, addon = ...
 local data = addon and addon.data

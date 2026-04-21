@@ -22,15 +22,15 @@ const LSM_LUA: &str = include_str!("../vendor/libsharedmedia-3.0/LibSharedMedia-
 const INNER_LIB_XML: &str = include_str!("../vendor/libsharedmedia-3.0/LibSharedMedia-3.0/lib.xml");
 
 fn generate_loader(version: &str) -> String {
-	LOADER_TEMPLATE.replace("__WINDMEDIA_VERSION__", version)
+	LOADER_TEMPLATE.replace("__VERSION__", version)
 }
 
 fn generate_toc(version: &str, addon_name: &str) -> String {
 	let title = crate::addon_title(addon_name);
 	TOC_TEMPLATE
-		.replace("__WINDMEDIA_VERSION__", version)
-		.replace("__WINDMEDIA_INTERFACE__", TOC_INTERFACE)
-		.replace("__WINDMEDIA_TITLE__", title)
+		.replace("__VERSION__", version)
+		.replace("__INTERFACE__", TOC_INTERFACE)
+		.replace("__TITLE__", title)
 }
 
 /// Write template files (`loader.lua`, `{addon_name}.toc`) to the addon directory.
@@ -104,7 +104,7 @@ mod tests {
 		assert!(addon_dir.join("TestAddon.toc").exists());
 
 		let loader = std::fs::read_to_string(addon_dir.join("loader.lua")).unwrap();
-		assert!(loader.contains("WindMedia loader"));
+		assert!(loader.contains("Media registration loader"));
 		assert!(loader.contains("local ADDON_NAME, addon = ..."));
 		assert!(loader.contains("BASE_PATH"));
 		assert!(loader.contains("ADDON_NAME"));
@@ -149,7 +149,7 @@ mod tests {
 
 		deploy_templates(&addon_dir).unwrap();
 		let loader = std::fs::read_to_string(addon_dir.join("loader.lua")).unwrap();
-		assert!(loader.contains("WindMedia loader"));
+		assert!(loader.contains("Media registration loader"));
 		assert!(loader.contains("Version: "));
 		assert!(!loader.contains("DO NOT EDIT MANUALLY"));
 		assert!(!loader.contains("Reads the data table"));
@@ -218,7 +218,7 @@ mod tests {
 		deploy_templates(&addon_dir).unwrap();
 
 		let loader = std::fs::read_to_string(addon_dir.join("loader.lua")).unwrap();
-		assert!(loader.contains("WindMedia loader"));
+		assert!(loader.contains("Media registration loader"));
 		assert!(loader.contains("local ADDON_NAME, addon = ..."));
 		assert!(loader.contains(r#"Interface\\AddOns\\"#));
 		assert!(loader.contains("ADDON_NAME"));
