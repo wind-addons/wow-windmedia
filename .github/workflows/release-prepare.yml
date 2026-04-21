@@ -59,12 +59,21 @@ jobs:
         run: |
           set -euo pipefail
 
-          case "${{ inputs.bump }}" in
+          bump="${{ inputs.bump }}"
+
+          # When using --auto with no existing tags, fall back to --first-release
+          if [ "$bump" = "auto" ] && [ -z "$(git tag --list)" ]; then
+            echo "No tags found — using --first-release for initial release"
+            echo "value=--first-release" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          case "$bump" in
             auto|major|minor|patch)
-              echo "value=--${{ inputs.bump }}" >> "$GITHUB_OUTPUT"
+              echo "value=--$bump" >> "$GITHUB_OUTPUT"
               ;;
             *)
-              echo "value=${{ inputs.bump }}" >> "$GITHUB_OUTPUT"
+              echo "value=$bump" >> "$GITHUB_OUTPUT"
               ;;
           esac
 
