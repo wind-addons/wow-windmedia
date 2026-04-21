@@ -1,6 +1,6 @@
-## Interface: __WINDMEDIA_INTERFACE__
-## Version: __WINDMEDIA_VERSION__
-## Title: __WINDMEDIA_TITLE__
+## Interface: __INTERFACE__
+## Version: __VERSION__
+## Title: __TITLE__
 ## Notes: Provides textures, sounds, and other media for LibSharedMedia addons.
 ## DefaultState: enabled
 

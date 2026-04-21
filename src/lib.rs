@@ -1,7 +1,7 @@
 //! # wow-sharedmedia
 //!
-//! A Rust library for managing [World of Warcraft][wow] addon SharedMedia assets
-//! — fonts, textures, sounds, borders, and statusbars — powered by
+//! A Rust library for building World of Warcraft addons that register media
+//! assets — fonts, textures, sounds, borders, and statusbars — with
 //! [LibSharedMedia-3.0][lsm].
 //!
 //! ## Overview

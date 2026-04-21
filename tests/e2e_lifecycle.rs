@@ -124,7 +124,7 @@ fn e2e_full_lifecycle_all_media_types() {
 
 	let loader = std::fs::read_to_string(addon_dir.join("loader.lua")).unwrap();
 	assert!(!loader.contains("--[["));
-	assert!(loader.contains("-- WindMedia loader"));
+	assert!(loader.contains("-- Media registration loader"));
 	assert!(loader.contains("-- Version:"));
 
 	// Phase 7: Verify vendor libraries deployed
@@ -306,4 +306,30 @@ fn e2e_plain_folder_name() {
 	// Phase 6: Verify final state
 	let data = read_data(&addon_dir).unwrap();
 	assert!(data.entries.is_empty());
+}
+
+#[test]
+fn e2e_custom_addon_name() {
+	let tmp = TempDir::new().unwrap();
+	let addon_dir = tmp.path().join("!!MyCustomMedia");
+
+	let data = ensure_addon_dir(&addon_dir).unwrap();
+	assert_eq!(data.entries.len(), 0);
+	assert!(addon_dir.join("!!MyCustomMedia.toc").exists());
+
+	let toc = std::fs::read_to_string(addon_dir.join("!!MyCustomMedia.toc")).unwrap();
+	assert!(toc.contains("## Title: MyCustomMedia"));
+	assert!(!toc.contains("WindMedia"));
+
+	let tga = fixture_statusbar(tmp.path());
+	let sb = import_media(&addon_dir, ImportOptions::new(MediaType::Statusbar, "Custom Bar", &tga)).unwrap();
+	assert_eq!(sb.entry.key, "Custom Bar");
+	assert!(addon_dir.join(&sb.entry.file).exists());
+
+	let data = read_data(&addon_dir).unwrap();
+	assert_eq!(data.entries.len(), 1);
+
+	let loader = std::fs::read_to_string(addon_dir.join("loader.lua")).unwrap();
+	assert!(loader.contains("ADDON_NAME"));
+	assert!(!loader.contains("MyCustomMedia"));
 }
