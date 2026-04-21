@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an improvement to wow-windmedia
+about: Suggest an improvement to wow-sharedmedia
 title: "feat: "
 labels: enhancement
 assignees: ""

@@ -7,7 +7,7 @@
 //! via `include_bytes!`. None of the test files are shipped in the crate.
 
 use tempfile::TempDir;
-use wow_windmedia::{
+use wow_sharedmedia::{
 	ImportOptions, MediaType, UpdateOptions, ensure_addon_dir, import_media, read_data, remove_media, update_media,
 };
 
@@ -120,7 +120,7 @@ fn e2e_full_lifecycle_all_media_types() {
 	let lua = std::fs::read_to_string(addon_dir.join("data.lua")).unwrap();
 	assert!(!lua.contains("--[["));
 	assert!(lua.contains("-- Generated:"));
-	assert!(lua.contains("-- Tool: wow-windmedia"));
+	assert!(lua.contains("-- Tool: wow-sharedmedia"));
 
 	let loader = std::fs::read_to_string(addon_dir.join("loader.lua")).unwrap();
 	assert!(!loader.contains("--[["));

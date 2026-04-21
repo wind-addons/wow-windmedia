@@ -107,7 +107,7 @@ jobs:
           name: vendor
           path: vendor
       - name: "✅ Lint crate"
-        run: cargo clippy -p wow-windmedia --all-targets -- -D warnings
+        run: cargo clippy -p wow-sharedmedia --all-targets -- -D warnings
 
   test:
     name: "🧪 Tests (${{ matrix.os }})"
@@ -134,7 +134,7 @@ jobs:
           name: vendor
           path: vendor
       - name: "✅ Run tests"
-        run: cargo test -p wow-windmedia
+        run: cargo test -p wow-sharedmedia
 
   docs:
     name: "📖 Docs"
@@ -159,7 +159,7 @@ jobs:
       - name: "✅ Build docs"
         env:
           RUSTDOCFLAGS: -D warnings
-        run: cargo doc -p wow-windmedia --no-deps
+        run: cargo doc -p wow-sharedmedia --no-deps
 
   msrv:
     name: "🏛️ MSRV"
@@ -182,7 +182,7 @@ jobs:
           name: vendor
           path: vendor
       - name: "✅ Check MSRV"
-        run: cargo check -p wow-windmedia
+        run: cargo check -p wow-sharedmedia
 
   package:
     name: "📦 Package"
@@ -205,4 +205,4 @@ jobs:
           name: vendor
           path: vendor
       - name: "✅ Dry-run package"
-        run: cargo package -p wow-windmedia --allow-dirty
+        run: cargo package -p wow-sharedmedia --allow-dirty

@@ -1,14 +1,14 @@
 [package]
-name = "wow-windmedia"
+name = "wow-sharedmedia"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.94.0"
 license = "MIT"
 description = "Rust library for managing World of Warcraft SharedMedia (LibSharedMedia-3.0) assets — fonts, textures, sounds, borders, and statusbars"
 readme = "README.md"
-repository = "https://github.com/wind-addons/wow-windmedia"
-documentation = "https://docs.rs/wow-windmedia"
-homepage = "https://github.com/wind-addons/wow-windmedia"
+repository = "https://github.com/fang2hou/wow-sharedmedia"
+documentation = "https://docs.rs/wow-sharedmedia"
+homepage = "https://github.com/fang2hou/wow-sharedmedia"
 keywords = ["wow", "sharedmedia", "addon", "libsharedmedia", "media"]
 categories = ["game-development", "multimedia"]
 include = [

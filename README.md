@@ -1,6 +1,6 @@
-# wow-windmedia
+# wow-sharedmedia
 
-[![CI](https://github.com/wind-addons/wow-windmedia/actions/workflows/ci.yml/badge.svg)](https://github.com/wind-addons/wow-windmedia/actions/workflows/ci.yml)
+[![CI](https://github.com/fang2hou/wow-sharedmedia/actions/workflows/ci.yml/badge.svg)](https://github.com/fang2hou/wow-sharedmedia/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Rust 1.94+](https://img.shields.io/badge/rust-1.94.0+-blue.svg)](https://doc.rust-lang.org/edition-guide/rust-2024/)
 
@@ -14,7 +14,7 @@ Third-party Lua dependencies are embedded from a pinned vendor snapshot. Normal 
 
 ```toml
 [dependencies]
-wow-windmedia = "0.1"
+wow-sharedmedia = "0.1"
 ```
 
 Requires Rust 1.94+ (edition 2024).
@@ -24,11 +24,11 @@ Requires Rust 1.94+ (edition 2024).
 ```rust
 use std::path::Path;
 
-use wow_windmedia::{
+use wow_sharedmedia::{
     ensure_addon_dir, import_media, read_data, ImportOptions, MediaType,
 };
 
-fn main() -> Result<(), wow_windmedia::Error> {
+fn main() -> Result<(), wow_sharedmedia::Error> {
     // The addon name is derived from the folder path.
     // "!!!WindMedia" sorts to top in the addon list;
     // "WindMedia" works too.

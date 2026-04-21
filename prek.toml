@@ -55,7 +55,7 @@ pass_filenames = true
 stages = ["commit-msg"]
 
 [[repos.hooks]]
-id = "wow-windmedia-lib-tests"
+id = "wow-sharedmedia-lib-tests"
 name = "cargo test --lib"
 language = "system"
 entry = "cargo test --lib"

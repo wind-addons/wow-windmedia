@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a defect in wow-windmedia
+about: Report a defect in wow-sharedmedia
 title: "bug: "
 labels: bug
 assignees: ""

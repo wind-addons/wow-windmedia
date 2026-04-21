@@ -82,15 +82,15 @@ jobs:
       - name: "✅ Check Lua formatting"
         run: stylua --check templates/*.lua
       - name: "🧹 Clippy"
-        run: cargo clippy -p wow-windmedia --all-targets -- -D warnings
+        run: cargo clippy -p wow-sharedmedia --all-targets -- -D warnings
       - name: "🧪 Tests"
-        run: cargo test -p wow-windmedia
+        run: cargo test -p wow-sharedmedia
       - name: "📖 Docs"
         env:
           RUSTDOCFLAGS: -D warnings
-        run: cargo doc -p wow-windmedia --no-deps
+        run: cargo doc -p wow-sharedmedia --no-deps
       - name: "📦 Package dry run"
-        run: cargo publish -p wow-windmedia --dry-run --allow-dirty
+        run: cargo publish -p wow-sharedmedia --dry-run --allow-dirty
 
   release:
     name: "🚀 Publish & Create GitHub Release"
@@ -146,13 +146,13 @@ jobs:
         if: ${{ inputs.registry_auth == 'trusted' }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ steps.crates_auth.outputs.token }}
-        run: cargo publish -p wow-windmedia --allow-dirty
+        run: cargo publish -p wow-sharedmedia --allow-dirty
 
       - name: "📦 Publish to crates.io (bootstrap token)"
         if: ${{ inputs.registry_auth == 'bootstrap-token' }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_BOOTSTRAP_TOKEN }}
-        run: cargo publish -p wow-windmedia --allow-dirty
+        run: cargo publish -p wow-sharedmedia --allow-dirty
 
       - name: "🚀 Create GitHub Release"
         uses: softprops/action-gh-release@v2

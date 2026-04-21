@@ -1,6 +1,6 @@
 # 🚀 Release Process
 
-This document describes the automated release pipeline for `wow-windmedia`.
+This document describes the automated release pipeline for `wow-sharedmedia`.
 
 Releases are driven by [cocogitto](https://docs.cocogitto.io/) — a conventional-commit–aware versioning tool integrated into GitHub Actions. The repository now uses a **two-phase release flow**:
 
@@ -70,10 +70,10 @@ Runs the final release quality gate on the selected ref. It covers the core Rust
 
 - `cargo fmt --all --check`
 - `stylua --check templates/*.lua`
-- `cargo clippy -p wow-windmedia --all-targets -- -D warnings`
-- `cargo test -p wow-windmedia`
-- `cargo doc -p wow-windmedia --no-deps` (with `RUSTDOCFLAGS=-D warnings`)
-- `cargo publish -p wow-windmedia --dry-run --allow-dirty`
+- `cargo clippy -p wow-sharedmedia --all-targets -- -D warnings`
+- `cargo test -p wow-sharedmedia`
+- `cargo doc -p wow-sharedmedia --no-deps` (with `RUSTDOCFLAGS=-D warnings`)
+- `cargo publish -p wow-sharedmedia --dry-run --allow-dirty`
 
 If any step fails, the pipeline stops. Nothing is published.
 
@@ -83,7 +83,7 @@ Only runs if verification passes. It performs the following in sequence:
 
 1. **Read version** — extracts the reviewed version from `Cargo.toml`
 2. **Generate release notes** — `cog changelog --at <version>` produces release notes for GitHub
-3. **Publish** — `cargo publish` uploads the crate to [crates.io](https://crates.io/crates/wow-windmedia)
+3. **Publish** — `cargo publish` uploads the crate to [crates.io](https://crates.io/crates/wow-sharedmedia)
 4. **GitHub Release** — creates a GitHub Release from the reviewed commit; prerelease versions are marked as prereleases automatically
 
 ## 📊 Bump Types
@@ -126,7 +126,7 @@ After the first successful publish, configure Trusted Publishing for this crate 
 
 1. Open the crate on crates.io
 2. Go to **Settings → Trusted Publishing**
-3. Add the GitHub repository `wind-addons/wow-windmedia`
+3. Add the GitHub repository `fang2hou/wow-sharedmedia`
 4. Authorize the `release.yml` workflow
 5. Switch future publishes to `registry_auth=trusted`
 6. Delete `CRATES_IO_BOOTSTRAP_TOKEN`
@@ -182,9 +182,9 @@ Run the checks locally on the reviewed release commit to identify the issue:
 ```bash
 bun install && bun run update-vendor
 cargo fmt --all --check
-cargo clippy -p wow-windmedia --all-targets -- -D warnings
-cargo test -p wow-windmedia
-cargo publish -p wow-windmedia --dry-run --allow-dirty
+cargo clippy -p wow-sharedmedia --all-targets -- -D warnings
+cargo test -p wow-sharedmedia
+cargo publish -p wow-sharedmedia --dry-run --allow-dirty
 ```
 
 ### Do I still need a sync PR after publishing?
@@ -195,8 +195,8 @@ No. The release version is reviewed and merged to `main` before publishing, so t
 
 After a successful release, verify:
 
-- [ ] The crate appears on [crates.io](https://crates.io/crates/wow-windmedia) with the correct version
-- [ ] [docs.rs](https://docs.rs/wow-windmedia) builds successfully
+- [ ] The crate appears on [crates.io](https://crates.io/crates/wow-sharedmedia) with the correct version
+- [ ] [docs.rs](https://docs.rs/wow-sharedmedia) builds successfully
 - [ ] The GitHub Release renders the changelog correctly
 - [ ] For beta releases, the GitHub Release is marked as a prerelease
 - [ ] If this was the first publish, crates.io Trusted Publishing is configured before the next release
