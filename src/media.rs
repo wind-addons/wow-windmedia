@@ -146,7 +146,7 @@ pub struct RemovedEntry {
 	pub deleted_file: PathBuf,
 }
 
-/// Create or repair a WindMedia addon directory.
+/// Initialize a LibSharedMedia-compatible addon directory.
 ///
 /// This function creates the media subdirectories, initializes `data.lua` when
 /// missing, and re-deploys the static `loader.lua` and `.toc` templates.
