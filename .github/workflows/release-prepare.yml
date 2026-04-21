@@ -137,10 +137,17 @@ jobs:
           fi
 
           if [ "${{ steps.version.outputs.first_release }}" = "true" ]; then
-            cog changelog --at "$version" > CHANGELOG.md || echo "## $version" > CHANGELOG.md
+            cog changelog --at "$version" > /tmp/new_changelog.md || echo "## $version" > /tmp/new_changelog.md
           else
-            cog changelog --at "$version" > CHANGELOG.md
+            cog changelog --at "$version" > /tmp/new_changelog.md
           fi
+
+          # Prepend new section to existing CHANGELOG (preserve history)
+          if [ -f CHANGELOG.md ]; then
+            echo "" >> /tmp/new_changelog.md
+            cat CHANGELOG.md >> /tmp/new_changelog.md
+          fi
+          mv /tmp/new_changelog.md CHANGELOG.md
 
       - name: "🎨 Format changelog"
         run: npx oxfmt CHANGELOG.md
