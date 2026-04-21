@@ -30,9 +30,9 @@ use wow_sharedmedia::{
 
 fn main() -> Result<(), wow_sharedmedia::Error> {
     // The addon name is derived from the folder path.
-    // "!!!WindMedia" sorts to top in the addon list;
-    // "WindMedia" works too.
-    let addon_dir = Path::new("AddOns/WindMedia");
+    // "!!!MyMedia" sorts to top in the addon list;
+    // "MyMedia" works too.
+    let addon_dir = Path::new("AddOns/MyMedia");
     ensure_addon_dir(addon_dir, DEFAULT_MAX_BACKUPS)?;
 
     let source = Path::new("assets/my-statusbar.png");
@@ -78,19 +78,19 @@ This keeps the runtime model small, deterministic, and easy to integrate into hi
 
 The addon name is derived from the folder path — no hardcoding required.
 
-| Folder name    | TOC file           | TOC title   |
-| -------------- | ------------------ | ----------- |
-| `WindMedia`    | `WindMedia.toc`    | `WindMedia` |
-| `!!!WindMedia` | `!!!WindMedia.toc` | `WindMedia` |
-| `!!MyAddon`    | `!!MyAddon.toc`    | `MyAddon`   |
+| Folder name    | TOC file           | TOC title      |
+| -------------- | ------------------ | -------------- |
+| `MyMedia`      | `MyMedia.toc`      | `MyMedia`      |
+| `!!!MyMedia`   | `!!!MyMedia.toc`   | `MyMedia`      |
+| `CoolTextures` | `CoolTextures.toc` | `CoolTextures` |
 
 Leading `!` characters are stripped from the title automatically.
 
 ### 🗂️ Addon Layout
 
 ```text
-WindMedia/                      # or !!!WindMedia — both work
-├── WindMedia.toc               # or !!!WindMedia.toc
+MyMedia/                        # or !!!MyMedia — both work
+├── MyMedia.toc                 # or !!!MyMedia.toc
 ├── data.lua
 ├── loader.lua
 ├── libraries/

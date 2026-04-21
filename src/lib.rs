@@ -33,7 +33,7 @@
 //! fn main() -> Result<(), wow_sharedmedia::Error> {
 //!
 //! // Initialize addon directory (creates data.lua, loader.lua, .toc, media/ subdirs)
-//! let addon_dir = Path::new("AddOns/WindMedia");
+//! let addon_dir = Path::new("AddOns/MyMedia");
 //! ensure_addon_dir(addon_dir, DEFAULT_MAX_BACKUPS)?;
 //!
 //! // Import a statusbar texture
@@ -55,11 +55,11 @@
 //! ## Addon Directory Structure
 //!
 //! After `ensure_addon_dir`, the directory layout is driven by the folder
-//! name. For a folder named `MyAddon`:
+//! name. For a folder named `MyMedia`:
 //!
 //! ```text
-//! MyAddon/
-//! ├── MyAddon.toc       # WoW addon manifest (auto-generated)
+//! MyMedia/
+//! ├── MyMedia.toc       # WoW addon manifest (auto-generated)
 //! ├── data.lua           # Media registry (Lua table, single source of truth)
 //! ├── loader.lua         # LSM registration script (auto-generated)
 //! ├── libraries/         # Vendored LibSharedMedia-3.0 dependencies
@@ -71,9 +71,9 @@
 //!     └── sound/        # OGG audio files
 //! ```
 //!
-//! If the folder name starts with `!` (e.g. `!!!WindMedia`), the `.toc`
-//! file will be `!!!WindMedia.toc` but the in-addon title will strip the
-//! leading `!` characters (e.g. `WindMedia`).
+//! If the folder name starts with `!` (e.g. `!!!MyMedia`), the `.toc`
+//! file will be `!!!MyMedia.toc` but the in-addon title will strip the
+//! leading `!` characters (e.g. `MyMedia`).
 //!
 //! [wow]: https://worldofwarcraft.blizzard.com
 //! [lsm]: https://www.wowace.com/projects/libsharedmedia-3-0/
