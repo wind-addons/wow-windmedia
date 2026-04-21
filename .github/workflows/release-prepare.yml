@@ -115,7 +115,11 @@ jobs:
           fi
 
           if [ "${{ steps.version.outputs.use_cog }}" != "true" ]; then
-            git commit -m "chore(release): $version"
+            if git diff --cached --quiet; then
+              echo "No staged changes — skipping commit (version unchanged)"
+            else
+              git commit -m "chore(release): $version"
+            fi
           fi
           git tag "$version"
 
