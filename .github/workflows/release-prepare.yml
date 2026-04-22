@@ -127,36 +127,36 @@ jobs:
       - name: "📦 Install cocogitto for changelog"
         run: cargo install cocogitto --locked
 
-      - name: "📋 Generate changelog"
-        id: changelog
-        shell: bash
-        run: |
-          set -euo pipefail
+       - name: "📋 Generate changelog"
+         id: changelog
+         shell: bash
+         run: |
+           set -euo pipefail
 
-          version="${{ steps.commit.outputs.version }}"
-          if [ -z "$version" ]; then
-            version="${{ steps.cog_version.outputs.version }}"
-          fi
+           version="${{ steps.commit.outputs.version }}"
+           if [ -z "$version" ]; then
+             version="${{ steps.cog_version.outputs.version }}"
+           fi
 
-          git fetch origin main --tags
+           git fetch origin main --tags
 
-          prev_tag="$(git tag --sort=-version:creatordate | head -1 || true)"
+           prev_release="$(git log --first-parent --oneline --grep='chore(release): prepare' HEAD^ | head -1 || true)"
 
-          if [ -n "$prev_tag" ]; then
-            prev_oid="$(git rev-parse "$prev_tag")"
-            echo "Generating changelog from $prev_tag ($prev_oid) to $version"
-            cog changelog "${prev_oid}..HEAD" > /tmp/new_changelog.md
-            sed -i "1s/^## .*/## ${version} - $(date +%Y-%m-%d)/" /tmp/new_changelog.md
-          else
-            echo "No previous tag found — generating full changelog for $version"
-            cog changelog > /tmp/new_changelog.md || echo "## $version" > /tmp/new_changelog.md
-          fi
+           if [ -n "$prev_release" ]; then
+             prev_oid="$(echo "$prev_release" | cut -d' ' -f1)"
+             echo "Generating changelog from $prev_release to $version"
+             cog changelog "${prev_oid}..HEAD" > /tmp/new_changelog.md
+             sed -i "1s/^## .*/## ${version} - $(date +%Y-%m-%d)/" /tmp/new_changelog.md
+           else
+             echo "No previous release found — generating full changelog for $version"
+             cog changelog > /tmp/new_changelog.md || echo "## $version" > /tmp/new_changelog.md
+           fi
 
-          if [ -f CHANGELOG.md ]; then
-            echo "" >> /tmp/new_changelog.md
-            cat CHANGELOG.md >> /tmp/new_changelog.md
-          fi
-          mv /tmp/new_changelog.md CHANGELOG.md
+           if [ -f CHANGELOG.md ]; then
+             echo "" >> /tmp/new_changelog.md
+             cat CHANGELOG.md >> /tmp/new_changelog.md
+           fi
+           mv /tmp/new_changelog.md CHANGELOG.md
 
       - name: "🎨 Format changelog"
         working-directory: scripts

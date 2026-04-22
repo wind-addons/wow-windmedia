@@ -116,9 +116,11 @@ jobs:
             echo "prerelease=false" >> "$GITHUB_OUTPUT"
           fi
 
-          prev_tag="$(git tag --sort=-version:creatordate | head -1 || true)"
-          if [ -n "$prev_tag" ]; then
-            prev_oid="$(git rev-parse "$prev_tag")"
+          git fetch origin --tags
+
+          prev_release="$(git log --first-parent --oneline --grep='chore(release): prepare' HEAD^ | head -1 || true)"
+          if [ -n "$prev_release" ]; then
+            prev_oid="$(echo "$prev_release" | cut -d' ' -f1)"
             echo "prev_oid=$prev_oid" >> "$GITHUB_OUTPUT"
           else
             echo "prev_oid=" >> "$GITHUB_OUTPUT"
