@@ -6,12 +6,15 @@
 //!
 //! The `.toc` file name is derived from the addon directory name (e.g.
 //! `TestAddon.toc` for a folder named `TestAddon`).
+//!
+//! `TOC_INTERFACE` is set at compile time by `build.rs`, which extracts the
+//! latest WoW Interface version from the vendor's LibSharedMedia-3.0.toc.
 
 use std::path::Path;
 
 use crate::Error;
 
-const TOC_INTERFACE: &str = "120001";
+const TOC_INTERFACE: &str = env!("TOC_INTERFACE");
 const LOADER_TEMPLATE: &str = include_str!("../templates/loader.lua");
 const TOC_TEMPLATE: &str = include_str!("../templates/template.toc");
 

@@ -89,3 +89,26 @@ run = "bun run refresh-vendor"
 [tasks.ci]
 description = "Full CI pipeline"
 depends = ["fmt", "lint", "test"]
+
+[tasks."version:check"]
+description = "Check if vendor Interface version matches latest from Wago API"
+run = """
+wago_retail=$(curl -sf 'https://addons.wago.io/api/data/game' | python3 -c "import sys,json; print(json.load(sys.stdin)['live_patches']['supported_retail_patches'])")
+vendor_max=$(python3 -c "
+with open('vendor/libsharedmedia-3.0/LibSharedMedia-3.0.toc') as f:
+    for line in f:
+        if line.startswith('## Interface:'):
+            print(max(int(v.strip()) for v in line.split(':')[1].split(',') if v.strip().isdigit()))
+            break
+")
+major=${wago_retail%%.*}; rest=${wago_retail#*.}; minor=${rest%%.*}; patch=${rest#*.}
+wago_interface=$(printf '%d%02d%02d' "$major" "$minor" "$patch")
+echo "Wago API retail: ${wago_retail} -> Interface ${wago_interface}"
+echo "Vendor TOC max:  Interface ${vendor_max}"
+if [ "$wago_interface" != "$vendor_max" ]; then
+  echo "::warning::Vendor Interface (${vendor_max}) is behind Wago latest (${wago_interface}). Run 'mise run vendor:refresh' to update."
+  exit 1
+else
+  echo "OK — vendor is up to date."
+fi
+"""

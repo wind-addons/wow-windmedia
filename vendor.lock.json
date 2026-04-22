@@ -4,7 +4,7 @@
 		"libsharedmedia-3.0": {
 			"type": "svn-export",
 			"repository": "https://repos.wowace.com/wow/libsharedmedia-3-0/trunk",
-			"revision": 166,
+			"revision": 168,
 			"outputDir": "vendor/libsharedmedia-3.0",
 			"files": {
 				"LibStub/LibStub.lua": "f93f7dfbd280c0f8e0328bb194faa6db541c3c50b3d4d37eb064c816f0ec5576",
