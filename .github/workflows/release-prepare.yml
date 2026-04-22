@@ -139,25 +139,27 @@ jobs:
             version="${{ steps.cog_version.outputs.version }}"
           fi
 
-          # Find the previous tag on main (not on this release branch)
-          # Tags from squash-merged release branches are unreachable here,
-          # so we must fetch origin/main to make them visible.
           git fetch origin main --tags
 
           prev_tag="$(git tag --sort=-version:creatordate | grep -v "^${version}$" | head -1 || true)"
 
-          changelog_args=(--at "$version")
           if [ -n "$prev_tag" ]; then
-            changelog_args=(--at "$version" --from "$prev_tag")
             echo "Generating changelog from $prev_tag to $version"
           else
             echo "No previous tag found — generating full changelog for $version"
           fi
 
-          if [ "${{ steps.version.outputs.first_release }}" = "true" ]; then
-            cog changelog "${changelog_args[@]}" > /tmp/new_changelog.md || echo "## $version" > /tmp/new_changelog.md
+          cog changelog --at "$version" > /tmp/raw_changelog.md 2>/dev/null || true
+
+          if [ -s /tmp/raw_changelog.md ]; then
+            # cocogitto may include entries from previous versions when using squash-merge.
+            # Strip any pre-existing version sections from the output.
+            if [ -n "$prev_tag" ]; then
+              sed -i "/^## ${prev_tag}$/,\$d" /tmp/raw_changelog.md
+            fi
+            cp /tmp/raw_changelog.md /tmp/new_changelog.md
           else
-            cog changelog "${changelog_args[@]}" > /tmp/new_changelog.md
+            echo "## $version" > /tmp/new_changelog.md
           fi
 
           # Prepend new section to existing CHANGELOG (preserve history)
