@@ -36,8 +36,7 @@ fn main() {
 		println!("cargo:rustc-env=TOC_INTERFACE={override_val}");
 	} else {
 		let toc_path = root.join("vendor/libsharedmedia-3.0/LibSharedMedia-3.0.toc");
-		let content = std::fs::read_to_string(&toc_path)
-			.unwrap_or_else(|e| panic!("Failed to read vendor TOC: {e}"));
+		let content = std::fs::read_to_string(&toc_path).unwrap_or_else(|e| panic!("Failed to read vendor TOC: {e}"));
 
 		let interface_line = content
 			.lines()
