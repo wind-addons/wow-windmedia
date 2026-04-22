@@ -1,28 +1,17 @@
 ## 0.3.0 - 2026-04-22
 
-#### ✨ Features
-
-- add configurable max_backups with pruning (#19) - (1437e75) - Zhou Fang
-
 #### 🐛 Bug Fixes
 
-- (**changelog**) restore version history and preserve on future releases (#17) - (183f497) - Zhou Fang
-- (**ci**) use absolute path for oxfmt in release-prepare - (32bd289) - Zhou Fang
-- (**ci**) auto-format CHANGELOG and correct set-version flag (#14) - (7f17921) - Zhou Fang
 - update SharedMedia link, bump MSRV to 1.95, sync version in docs (#22) - (6bee068) - Zhou Fang
+- (**ci**) use absolute path for oxfmt in release-prepare - (32bd289) - Zhou Fang
 
 #### 📝 Documentation
 
 - use generic addon names in examples (#21) - (3952025) - Zhou Fang
-- add emoji to changelog section headers (#18) - (16b7fb0) - Zhou Fang
 
 #### 📦 Build
 
 - migrate to mise for unified toolchain management - (9caf4b2) - Zhou Fang
-
-#### ♻️ Refactoring
-
-- decouple library from WindMedia-specific naming (#15) - (c02e3cf) - Zhou Fang
 
 ## 0.2.0 - 2026-04-21
 
@@ -33,15 +22,10 @@
 #### 🐛 Bug Fixes
 
 - (**changelog**) restore version history and preserve on future releases (#17) - (183f497) - Zhou Fang
-- (**ci**) auto-format CHANGELOG and correct set-version flag (#14) - (7f17921) - Zhou Fang
 
 #### 📝 Documentation
 
 - add emoji to changelog section headers (#18) - (16b7fb0) - Zhou Fang
-
-#### ♻️ Refactoring
-
-- decouple library from WindMedia-specific naming (#15) - (c02e3cf) - Zhou Fang
 
 ## 0.1.1 - 2026-04-21
 

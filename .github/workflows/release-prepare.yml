@@ -139,10 +139,25 @@ jobs:
             version="${{ steps.cog_version.outputs.version }}"
           fi
 
-          if [ "${{ steps.version.outputs.first_release }}" = "true" ]; then
-            cog changelog --at "$version" > /tmp/new_changelog.md || echo "## $version" > /tmp/new_changelog.md
+          # Find the previous tag on main (not on this release branch)
+          # Tags from squash-merged release branches are unreachable here,
+          # so we must fetch origin/main to make them visible.
+          git fetch origin main --tags
+
+          prev_tag="$(git tag --sort=-version:creatordate | grep -v "^${version}$" | head -1 || true)"
+
+          changelog_args=(--at "$version")
+          if [ -n "$prev_tag" ]; then
+            changelog_args=(--at "$version" --from "$prev_tag")
+            echo "Generating changelog from $prev_tag to $version"
           else
-            cog changelog --at "$version" > /tmp/new_changelog.md
+            echo "No previous tag found — generating full changelog for $version"
+          fi
+
+          if [ "${{ steps.version.outputs.first_release }}" = "true" ]; then
+            cog changelog "${changelog_args[@]}" > /tmp/new_changelog.md || echo "## $version" > /tmp/new_changelog.md
+          else
+            cog changelog "${changelog_args[@]}" > /tmp/new_changelog.md
           fi
 
           # Prepend new section to existing CHANGELOG (preserve history)
