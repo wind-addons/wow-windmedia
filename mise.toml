@@ -8,9 +8,6 @@ stylua = "latest"
 [env]
 CARGO_TERM_COLOR = "always"
 
-[settings]
-experimental = true
-
 [tasks.fmt]
 description = "Check all formatting (Rust + TypeScript + Lua)"
 depends = ["rust:fmt", "ts:fmt", "lua:fmt"]
