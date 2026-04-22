@@ -1,3 +1,10 @@
+## 0.4.0 - 2026-04-22
+
+#### 🐛 Bug Fixes
+
+- (**ci**) replace Unreleased header with version and date (#32) - (ace1a68) - Zhou Fang
+- (**ci**) use explicit OID range for cog changelog (#30) - (f8749ab) - Zhou Fang
+
 ## 0.3.0 - 2026-04-22
 
 #### 🐛 Bug Fixes
