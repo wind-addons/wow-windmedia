@@ -125,8 +125,23 @@ jobs:
             echo "prerelease=false" >> "$GITHUB_OUTPUT"
           fi
 
+          prev_tag="$(git tag --sort=-version:creatordate | head -1 || true)"
+          if [ -n "$prev_tag" ]; then
+            prev_oid="$(git rev-parse "$prev_tag")"
+            echo "prev_oid=$prev_oid" >> "$GITHUB_OUTPUT"
+          else
+            echo "prev_oid=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: "📋 Generate changelog"
-        run: cog changelog --at ${{ steps.version.outputs.version }} -t full_hash > GITHUB_CHANGELOG.md
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${{ steps.version.outputs.prev_oid }}" ]; then
+            cog changelog "${{ steps.version.outputs.prev_oid }}..HEAD" -t full_hash > GITHUB_CHANGELOG.md
+          else
+            cog changelog -t full_hash > GITHUB_CHANGELOG.md || echo "## ${{ steps.version.outputs.version }}" > GITHUB_CHANGELOG.md
+          fi
 
       - name: "📦 Download vendor snapshot"
         uses: actions/download-artifact@v8

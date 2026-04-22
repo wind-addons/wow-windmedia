@@ -66,23 +66,19 @@ jobs:
           current="$(grep -m1 '^version = ' Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')"
 
           if [ "$bump" = "auto" ] && [ -z "$(git tag --list)" ]; then
-            # First release: use the current Cargo.toml version as-is
             version="$current"
             echo "first_release=true" >> "$GITHUB_OUTPUT"
             echo "No tags found — using current version $version for initial release"
           elif [ "$bump" = "auto" ]; then
-            # auto with existing tags: let cocogitto decide
             echo "first_release=false" >> "$GITHUB_OUTPUT"
             echo "use_cog=true" >> "$GITHUB_OUTPUT"
             echo "version=" >> "$GITHUB_OUTPUT"
             exit 0
           elif [ "$bump" = "major" ] || [ "$bump" = "minor" ] || [ "$bump" = "patch" ]; then
-            # Bump via cargo set-version
             cargo set-version --bump "$bump"
             version="$(grep -m1 '^version = ' Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')"
             echo "first_release=false" >> "$GITHUB_OUTPUT"
           else
-            # Exact version specified
             cargo set-version "$bump"
             version="$bump"
             echo "first_release=false" >> "$GITHUB_OUTPUT"
@@ -107,7 +103,8 @@ jobs:
           version="$(grep -m1 '^version = ' Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: "🚀 Commit version bump and create tag"
+      - name: "🚀 Commit version bump"
+        id: commit
         shell: bash
         run: |
           set -euo pipefail
@@ -124,45 +121,36 @@ jobs:
               git commit -m "chore(release): $version"
             fi
           fi
-          git tag "$version"
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: "📦 Install cocogitto for changelog"
         run: cargo install cocogitto --locked
 
       - name: "📋 Generate changelog"
+        id: changelog
         shell: bash
         run: |
           set -euo pipefail
 
-          version="${{ steps.version.outputs.version }}"
+          version="${{ steps.commit.outputs.version }}"
           if [ -z "$version" ]; then
             version="${{ steps.cog_version.outputs.version }}"
           fi
 
           git fetch origin main --tags
 
-          prev_tag="$(git tag --sort=-version:creatordate | grep -v "^${version}$" | head -1 || true)"
+          prev_tag="$(git tag --sort=-version:creatordate | head -1 || true)"
 
           if [ -n "$prev_tag" ]; then
-            echo "Generating changelog from $prev_tag to $version"
+            prev_oid="$(git rev-parse "$prev_tag")"
+            echo "Generating changelog from $prev_tag ($prev_oid) to $version"
+            cog changelog "${prev_oid}..HEAD" > /tmp/new_changelog.md
           else
             echo "No previous tag found — generating full changelog for $version"
+            cog changelog > /tmp/new_changelog.md || echo "## $version" > /tmp/new_changelog.md
           fi
 
-          cog changelog --at "$version" > /tmp/raw_changelog.md 2>/dev/null || true
-
-          if [ -s /tmp/raw_changelog.md ]; then
-            # cocogitto may include entries from previous versions when using squash-merge.
-            # Strip any pre-existing version sections from the output.
-            if [ -n "$prev_tag" ]; then
-              sed -i "/^## ${prev_tag}$/,\$d" /tmp/raw_changelog.md
-            fi
-            cp /tmp/raw_changelog.md /tmp/new_changelog.md
-          else
-            echo "## $version" > /tmp/new_changelog.md
-          fi
-
-          # Prepend new section to existing CHANGELOG (preserve history)
           if [ -f CHANGELOG.md ]; then
             echo "" >> /tmp/new_changelog.md
             cat CHANGELOG.md >> /tmp/new_changelog.md
@@ -188,7 +176,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git push -u origin "${{ steps.branch.outputs.branch }}" --tags
+          git push -u origin "${{ steps.branch.outputs.branch }}"
 
       - name: "🔀 Open release prep PR"
         env:
@@ -197,7 +185,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          version="${{ steps.version.outputs.version }}"
+          version="${{ steps.commit.outputs.version }}"
           if [ -z "$version" ]; then
             version="${{ steps.cog_version.outputs.version }}"
           fi
