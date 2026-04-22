@@ -12,72 +12,24 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  fmt:
-    name: "🎨 Rust Format"
+  setup:
+    name: "⚙️ Setup"
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout"
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - name: "🦀 Setup Rust toolchain"
-        uses: dtolnay/rust-toolchain@v1
+      - name: "🔧 Setup tools"
+        uses: jdx/mise-action@v4
         with:
-          toolchain: stable
-          components: rustfmt
-      - name: "✅ Check formatting"
-        run: cargo fmt --all --check
-
-  stylua:
-    name: "🌙 Lua Format"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "📥 Checkout"
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - name: "📦 Install StyLua"
-        uses: JohnnyMorganz/stylua-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          version: latest
-          args: false
-      - name: "✅ Check Lua formatting"
-        run: stylua --check templates/*.lua
-
-  oxc:
-    name: "🔎 OXC (lint + format)"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "📥 Checkout"
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - name: "🦀 Setup Bun"
-        uses: oven-sh/setup-bun@v2
+          cache: false
       - name: "📦 Install dependencies"
-        run: bun install --frozen-lockfile
-      - name: "✅ Check formatting"
-        run: bun run format:check
-      - name: "🧹 Lint"
-        run: bun run lint
-
-  vendor:
-    name: "📦 Materialize Vendor Snapshot"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "📥 Checkout"
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - name: "🦀 Setup Bun"
-        uses: oven-sh/setup-bun@v2
-      - name: "📦 Install dependencies"
-        run: bun install --frozen-lockfile
+        run: cd scripts && bun install --frozen-lockfile
       - name: "📦 Install SVN"
         run: sudo apt-get update && sudo apt-get install -y subversion
       - name: "⬇️ Materialize pinned vendor snapshot"
-        run: bun run update-vendor
+        run: mise run vendor:update
       - name: "📤 Upload vendor snapshot"
         uses: actions/upload-artifact@v7
         with:
@@ -85,20 +37,46 @@ jobs:
           path: vendor
           retention-days: 1
 
-  clippy:
-    name: "🧹 Clippy"
+  format:
+    name: "🎨 Format"
     runs-on: ubuntu-latest
-    needs: [vendor]
     steps:
       - name: "📥 Checkout"
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - name: "🦀 Setup Rust toolchain"
-        uses: dtolnay/rust-toolchain@v1
+      - name: "🔧 Setup tools"
+        uses: jdx/mise-action@v4
         with:
-          toolchain: stable
-          components: clippy
+          cache: false
+      - name: "🛠️ Ensure Rust components"
+        run: rustup component add rustfmt
+      - name: "📦 Install dependencies"
+        run: cd scripts && bun install --frozen-lockfile
+      - name: "✅ Check Rust formatting"
+        run: mise run rust:fmt
+      - name: "✅ Check TypeScript formatting"
+        run: mise run ts:fmt
+      - name: "✅ Check Lua formatting"
+        run: mise run lua:fmt
+
+  lint:
+    name: "🧹 Lint"
+    runs-on: ubuntu-latest
+    needs: [setup]
+    steps:
+      - name: "📥 Checkout"
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: "🔧 Setup tools"
+        uses: jdx/mise-action@v4
+        with:
+          cache: false
+      - name: "🛠️ Ensure Rust components"
+        run: rustup component add clippy
+      - name: "📦 Install dependencies"
+        run: cd scripts && bun install --frozen-lockfile
       - name: "💾 Cache Rust artifacts"
         uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor snapshot"
@@ -106,13 +84,15 @@ jobs:
         with:
           name: vendor
           path: vendor
-      - name: "✅ Lint crate"
-        run: cargo clippy -p wow-sharedmedia --all-targets -- -D warnings
+      - name: "✅ Lint Rust"
+        run: mise run rust:lint
+      - name: "✅ Lint TypeScript"
+        run: mise run ts:lint
 
   test:
-    name: "🧪 Tests (${{ matrix.os }})"
+    name: "🧪 Test (${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
-    needs: [vendor]
+    needs: [setup]
     strategy:
       fail-fast: false
       matrix:
@@ -122,10 +102,10 @@ jobs:
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - name: "🦀 Setup Rust toolchain"
-        uses: dtolnay/rust-toolchain@v1
+      - name: "🔧 Setup tools"
+        uses: jdx/mise-action@v4
         with:
-          toolchain: stable
+          cache: false
       - name: "💾 Cache Rust artifacts"
         uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor snapshot"
@@ -139,16 +119,16 @@ jobs:
   docs:
     name: "📖 Docs"
     runs-on: ubuntu-latest
-    needs: [vendor]
+    needs: [setup]
     steps:
       - name: "📥 Checkout"
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - name: "🦀 Setup Rust toolchain"
-        uses: dtolnay/rust-toolchain@v1
+      - name: "🔧 Setup tools"
+        uses: jdx/mise-action@v4
         with:
-          toolchain: stable
+          cache: false
       - name: "💾 Cache Rust artifacts"
         uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor snapshot"
@@ -161,42 +141,19 @@ jobs:
           RUSTDOCFLAGS: -D warnings
         run: cargo doc -p wow-sharedmedia --no-deps
 
-  msrv:
-    name: "🏛️ MSRV"
-    runs-on: ubuntu-latest
-    needs: [vendor]
-    steps:
-      - name: "📥 Checkout"
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - name: "🦀 Setup Rust toolchain"
-        uses: dtolnay/rust-toolchain@v1
-        with:
-          toolchain: 1.94.0
-      - name: "💾 Cache Rust artifacts"
-        uses: Swatinem/rust-cache@v2
-      - name: "📦 Download vendor snapshot"
-        uses: actions/download-artifact@v8
-        with:
-          name: vendor
-          path: vendor
-      - name: "✅ Check MSRV"
-        run: cargo check -p wow-sharedmedia
-
   package:
     name: "📦 Package"
     runs-on: ubuntu-latest
-    needs: [vendor]
+    needs: [setup]
     steps:
       - name: "📥 Checkout"
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - name: "🦀 Setup Rust toolchain"
-        uses: dtolnay/rust-toolchain@v1
+      - name: "🔧 Setup tools"
+        uses: jdx/mise-action@v4
         with:
-          toolchain: stable
+          cache: false
       - name: "💾 Cache Rust artifacts"
         uses: Swatinem/rust-cache@v2
       - name: "📦 Download vendor snapshot"

@@ -2,7 +2,9 @@
 Cargo.lock
 .DS_Store
 node_modules
+scripts/node_modules
 vendor
 .zed
 .vscode
 .sisyphus
+.mise.local.toml

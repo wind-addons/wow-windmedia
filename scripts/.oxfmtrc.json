@@ -1,5 +1,4 @@
 {
-	"$schema": "./node_modules/oxfmt/configuration_schema.json",
 	"useTabs": true,
 	"printWidth": 120,
 	"sortImports": {
@@ -11,6 +10,5 @@
 			"type-import",
 			"unknown"
 		]
-	},
-	"ignorePatterns": ["src/**", "vendor/**", "templates/**", "target/**", ".zed/**", "cog.toml"]
+	}
 }

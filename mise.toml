@@ -1,0 +1,91 @@
+min_version = "2025.1.0"
+
+[tools]
+"rust" = { version = "1.95.0", profile = "default", components = "clippy,rust-analyzer,rust-src,rustfmt" }
+bun = "latest"
+stylua = "latest"
+
+[env]
+CARGO_TERM_COLOR = "always"
+
+[tasks.fmt]
+description = "Check all formatting (Rust + TypeScript + Lua)"
+depends = ["rust:fmt", "ts:fmt", "lua:fmt"]
+
+[tasks."fmt:fix"]
+description = "Fix all formatting (Rust + TypeScript + Lua)"
+depends = ["rust:fmt:fix", "ts:fmt:fix", "lua:fmt:fix"]
+
+[tasks.lint]
+description = "Lint all code (Rust + TypeScript)"
+depends = ["rust:lint", "ts:lint"]
+
+[tasks."rust:fmt"]
+description = "Check Rust formatting"
+run = "cargo fmt --all --check"
+
+[tasks."rust:fmt:fix"]
+description = "Fix Rust formatting"
+run = "cargo fmt --all"
+
+[tasks."rust:lint"]
+description = "Lint Rust with clippy"
+run = "cargo clippy -p wow-sharedmedia --all-targets -- -D warnings"
+
+[tasks.build]
+description = "Build the project"
+run = "cargo build -p wow-sharedmedia"
+
+[tasks.test]
+description = "Run tests"
+run = "cargo test -p wow-sharedmedia"
+
+[tasks.docs]
+description = "Build docs"
+env = { RUSTDOCFLAGS = "-D warnings" }
+run = "cargo doc -p wow-sharedmedia --no-deps"
+
+[tasks.msrv]
+description = "Check MSRV"
+run = "cargo check -p wow-sharedmedia"
+
+[tasks.package]
+description = "Dry-run package"
+run = "cargo package -p wow-sharedmedia --allow-dirty"
+
+[tasks."ts:fmt"]
+description = "Check TypeScript formatting with oxfmt"
+dir = "scripts"
+run = "bun run format:check"
+
+[tasks."ts:fmt:fix"]
+description = "Fix TypeScript formatting"
+dir = "scripts"
+run = "bun run format"
+
+[tasks."ts:lint"]
+description = "Lint TypeScript with oxlint"
+dir = "scripts"
+run = "bun run lint"
+
+[tasks."lua:fmt"]
+description = "Check Lua formatting with StyLua"
+run = "stylua --check templates/*.lua"
+
+[tasks."lua:fmt:fix"]
+description = "Fix Lua formatting with StyLua"
+run = "stylua templates/*.lua"
+
+[tasks."vendor:update"]
+description = "Materialize pinned vendor snapshot"
+dir = "scripts"
+run = "bun run update-vendor"
+
+[tasks."vendor:refresh"]
+description = "Refresh vendor dependencies from upstream"
+dir = "scripts"
+run = "bun run refresh-vendor"
+
+[tasks.ci]
+description = "Full CI pipeline"
+depends = ["fmt", "lint", "test"]

@@ -21,8 +21,7 @@ Keep changes aligned with these goals:
 
 | Tool                   | Purpose                                              |
 | ---------------------- | ---------------------------------------------------- |
-| Rust 1.95+             | Build and test                                       |
-| [Bun](https://bun.sh/) | Vendor snapshot script and JS toolchain              |
+| [mise](https://mise.jdx.dev/) | Tool version management (Rust, Bun)           |
 | SVN                    | Vendor snapshot materialization (LibSharedMedia-3.0) |
 
 ### 💻 Platform-specific setup
@@ -44,8 +43,9 @@ sudo apt-get install subversion
 ## ⚙️ Setup
 
 ```bash
-bun install
-bun run update-vendor
+mise install
+cd scripts && bun install
+mise run vendor:update
 ```
 
 This materializes the pinned vendor snapshot declared in `vendor.lock.json` into `vendor/`. The directory is gitignored, but Rust embeds the files at build time via `include_str!`, so the snapshot must exist locally before building.
@@ -53,7 +53,7 @@ This materializes the pinned vendor snapshot declared in `vendor.lock.json` into
 To refresh upstream dependencies intentionally, run:
 
 ```bash
-bun run refresh-vendor
+mise run vendor:refresh
 ```
 
 Refresh mode updates `vendor.lock.json` and regenerates `vendor/`. Treat that as a maintainer workflow and review the resulting changes before merging.
@@ -63,13 +63,10 @@ Refresh mode updates `vendor.lock.json` and regenerates `vendor/`. Treat that as
 Run these before opening a PR:
 
 ```bash
-cargo fmt --all --check
-cargo clippy -p wow-sharedmedia --all-targets -- -D warnings
-cargo test -p wow-sharedmedia
-cargo doc -p wow-sharedmedia --no-deps
-stylua --check templates/*.lua
-bun run lint
-bun run format:check
+mise run fmt
+mise run lint
+mise run test
+mise run docs
 ```
 
 ## 🪝 Pre-commit Hooks

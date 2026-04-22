@@ -27,10 +27,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "🦀 Setup Rust toolchain"
-        uses: dtolnay/rust-toolchain@v1
+      - name: "🔧 Setup tools"
+        uses: jdx/mise-action@v4
         with:
-          toolchain: stable
+          cache: false
 
       - name: "💾 Cache Rust artifacts"
         uses: Swatinem/rust-cache@v2
@@ -150,7 +150,7 @@ jobs:
           mv /tmp/new_changelog.md CHANGELOG.md
 
       - name: "🎨 Format changelog"
-        run: npx oxfmt CHANGELOG.md
+        run: cd scripts && bun x oxfmt ../CHANGELOG.md
 
       - name: "🧾 Include changelog in release commit"
         shell: bash

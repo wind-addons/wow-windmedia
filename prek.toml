@@ -32,8 +32,8 @@ stages = ["pre-commit"]
 id = "oxfmt-check"
 name = "oxfmt --check"
 language = "system"
-entry = "bun run format:check"
-files = { glob = ["*.ts", "*.js", "*.mjs", "*.cjs"] }
+entry = "mise run ts:fmt"
+files = { glob = ["scripts/**/*.ts", "scripts/**/*.js", "scripts/**/*.mjs", "scripts/**/*.cjs"] }
 pass_filenames = false
 stages = ["pre-commit"]
 
@@ -41,8 +41,8 @@ stages = ["pre-commit"]
 id = "oxlint-check"
 name = "oxlint"
 language = "system"
-entry = "bun run lint"
-files = { glob = ["*.ts", "*.js", "*.mjs", "*.cjs"] }
+entry = "mise run ts:lint"
+files = { glob = ["scripts/**/*.ts", "scripts/**/*.js", "scripts/**/*.mjs", "scripts/**/*.cjs"] }
 pass_filenames = false
 stages = ["pre-commit"]
 

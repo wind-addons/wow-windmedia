@@ -34,7 +34,7 @@ type RemoteFileVendorSpec = {
 	};
 };
 
-const ROOT = import.meta.dir;
+const ROOT = resolve(import.meta.dir, "..");
 const MANIFEST_PATH = resolve(ROOT, "vendor.lock.json");
 const VENDOR_ROOT = resolve(ROOT, "vendor");
 const REFRESH_FLAG = "--refresh";
