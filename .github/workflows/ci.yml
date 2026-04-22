@@ -38,7 +38,7 @@ jobs:
           retention-days: 1
 
   fmt-rust:
-    name: "🎨 Format (Rust)"
+    name: "🎨 Rust Format"
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout"
@@ -54,8 +54,8 @@ jobs:
       - name: "✅ Check formatting"
         run: mise run rust:fmt
 
-  fmt-ts:
-    name: "🎨 Format (TypeScript)"
+  oxc:
+    name: "🔎 OXC (lint + format)"
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout"
@@ -70,9 +70,11 @@ jobs:
         run: cd scripts && bun install --frozen-lockfile
       - name: "✅ Check formatting"
         run: mise run ts:fmt
+      - name: "✅ Lint"
+        run: mise run ts:lint
 
   fmt-lua:
-    name: "🎨 Format (Lua)"
+    name: "🌙 Lua Format"
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Checkout"
@@ -110,23 +112,6 @@ jobs:
           path: vendor
       - name: "✅ Lint crate"
         run: mise run rust:lint
-
-  lint-ts:
-    name: "🧹 Lint (TypeScript)"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "📥 Checkout"
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - name: "🔧 Setup tools"
-        uses: jdx/mise-action@v4
-        with:
-          cache: false
-      - name: "📦 Install dependencies"
-        run: cd scripts && bun install --frozen-lockfile
-      - name: "✅ Lint"
-        run: mise run ts:lint
 
   test:
     name: "🧪 Tests (${{ matrix.os }})"
