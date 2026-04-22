@@ -1,3 +1,9 @@
+## Unreleased (f8749ab..4369be3)
+
+#### 🐛 Bug Fixes
+
+- (**ci**) use explicit OID range for cog changelog (#30) - (f8749ab) - Zhou Fang
+
 ## 0.3.0 - 2026-04-22
 
 #### 🐛 Bug Fixes
