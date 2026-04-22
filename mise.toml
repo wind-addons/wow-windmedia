@@ -13,8 +13,8 @@ description = "Check all formatting (Rust + TypeScript + Lua)"
 depends = ["rust:fmt", "ts:fmt", "lua:fmt"]
 
 [tasks."fmt:fix"]
-description = "Fix all formatting (Rust + TypeScript)"
-depends = ["rust:fmt:fix", "ts:fmt:fix"]
+description = "Fix all formatting (Rust + TypeScript + Lua)"
+depends = ["rust:fmt:fix", "ts:fmt:fix", "lua:fmt:fix"]
 
 [tasks.lint]
 description = "Lint all code (Rust + TypeScript)"
@@ -71,6 +71,10 @@ run = "bun run lint"
 [tasks."lua:fmt"]
 description = "Check Lua formatting with StyLua"
 run = "stylua --check templates/*.lua"
+
+[tasks."lua:fmt:fix"]
+description = "Fix Lua formatting with StyLua"
+run = "stylua templates/*.lua"
 
 [tasks."vendor:update"]
 description = "Materialize pinned vendor snapshot"

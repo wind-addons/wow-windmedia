@@ -44,6 +44,7 @@ sudo apt-get install subversion
 
 ```bash
 mise install
+cd scripts && bun install
 mise run vendor:update
 ```
 
