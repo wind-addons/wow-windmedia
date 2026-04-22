@@ -146,6 +146,7 @@ jobs:
             prev_oid="$(git rev-parse "$prev_tag")"
             echo "Generating changelog from $prev_tag ($prev_oid) to $version"
             cog changelog "${prev_oid}..HEAD" > /tmp/new_changelog.md
+            sed -i "1s/^## .*/## ${version} - $(date +%Y-%m-%d)/" /tmp/new_changelog.md
           else
             echo "No previous tag found — generating full changelog for $version"
             cog changelog > /tmp/new_changelog.md || echo "## $version" > /tmp/new_changelog.md
