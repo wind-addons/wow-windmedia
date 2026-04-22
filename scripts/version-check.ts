@@ -17,7 +17,10 @@ function getVendorMaxInterface(): number {
 	if (!line) {
 		throw new Error("No ## Interface: line found in vendor TOC");
 	}
-	const versions = line.replace("## Interface:", "").split(",").map((v) => Number(v.trim()));
+	const versions = line
+		.replace("## Interface:", "")
+		.split(",")
+		.map((v) => Number(v.trim()));
 	return Math.max(...versions);
 }
 
